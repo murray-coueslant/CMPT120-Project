@@ -17,7 +17,9 @@ loc3 = 'c'
 
 loc4 = 'd'
 
-locations = [loc1, loc2, loc3, loc4]
+loc5 = 'e'
+
+locations = [loc1, loc2, loc3, loc4, loc5]
 
 # storage variables
 
@@ -40,28 +42,40 @@ def displayTitle():
 
 # score display routine
 def displayScore(score):
-    print('Score:', score)
+    print('Score:', score, '\n')
 
 # location display routine
 def displayLocation(location):
-    print('You find yourself in', location)
+    print('You find yourself in ' + location + '\n')
 
 # main game routine
 def game(score, locations):
     locationCounter = 0
     currentLocation = locations[locationCounter]
-    while locationCounter <= 3:
+    while locationCounter <= 4:
         displayLocation(currentLocation)
-        if locationCounter == 3:
+        if locationCounter == 4:
+            score += 5
+            displayScore(score)
+            input('Press enter to complete the game.' + '\n')
             endGame()
+            return
         locationCounter += 1
         currentLocation = locations[locationCounter]
         score += 5
         displayScore(score)
-        input('Press enter to move to the next location.')
+        input('Press enter to move to the next location.'+'\n')
 
 # end of game routine
 def endGame():
-    x = 1
+    print('\n' + 'Congratulations, you have made it home safely. You rest for a few days and then return to normal '
+          'life.' + '\n')
+    displayCopyright()
+    print('I hope you enjoyed playing this game. See you soon!' + '\n')
+
+def displayCopyright():
+    print('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
+          ' use is permitted.' + '\n')
+
 startGame()
 
