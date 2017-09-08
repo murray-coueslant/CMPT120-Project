@@ -23,10 +23,4 @@ score = 0
 
 playerLocation = locations[0]
 
-# location initialisation
-
-rand = random.randint(0, 3)
-playerLocation = locations[rand]
-
-
 
