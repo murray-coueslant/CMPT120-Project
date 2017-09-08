@@ -1,7 +1,9 @@
 # a simple text adventure game with four locations
 # Written by: Murray Coueslant, Date: 2017/09/08
 
-import random
+import sys
+from pyfiglet import figlet_format
+from termcolor import cprint
 
 # location definitions
 
@@ -23,4 +25,14 @@ score = 0
 
 playerLocation = locations[0]
 
+# starting routine
+def startGame():
+    displayTitle()
+
+# title display routine
+def displayTitle():
+    cprint(figlet_format('A Text Adventure!', font='big'),
+           'white', attrs=['bold'])
+
+startGame()
 
