@@ -11,7 +11,9 @@ loc1 = 'a dark room, around you you can feel some sticks. In your pocket you fee
        'sticks with your shirt to create a makeshift torch. You light the torch revealing a wooden ' \
        'door to the left of you.'
 
-loc2 = 'b'
+loc2 = 'an open clearing. Behind you is the hut you just left. It is twilight so you decide to keep your torch lit.' \
+       'How did you end up here? What were you doing in the hut before you fell unconscious? Ahead of you you spot' \
+       'some broken brush, you follow the tracks.'
 
 loc3 = 'c'
 
