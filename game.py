@@ -28,11 +28,40 @@ playerLocation = locations[0]
 # starting routine
 def startGame():
     displayTitle()
+    print('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, this is',
+          'the story of your most recent intrepid adventure.'+'\n')
+    displayScore(score)
+    game(score, locations)
 
 # title display routine
 def displayTitle():
     cprint(figlet_format('A Text Adventure!', font='big'),
            'white', attrs=['bold'])
 
+# score display routine
+def displayScore(score):
+    print('Score:', score)
+
+# location display routine
+def displayLocation(location):
+    print('You find yourself in', location)
+
+# main game routine
+def game(score, locations):
+    locationCounter = 0
+    currentLocation = locations[locationCounter]
+    while locationCounter <= 3:
+        displayLocation(currentLocation)
+        if locationCounter == 3:
+            endGame()
+        locationCounter += 1
+        currentLocation = locations[locationCounter]
+        score += 5
+        displayScore(score)
+        input('Press enter to move to the next location.')
+
+# end of game routine
+def endGame():
+    x = 1
 startGame()
 
