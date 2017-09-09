@@ -5,15 +5,16 @@ import sys
 from pyfiglet import figlet_format
 from termcolor import cprint
 
+
 # location definitions
 
-loc1 = 'a dark room, around you you can feel some sticks. In your pocket you feel a lighter. You bundle some of the ' \
-       'sticks with your shirt to create a makeshift torch. You light the torch revealing a wooden ' \
+loc1 = 'in a dark room, around you you can feel some sticks. In your pocket you feel a lighter. You bundle some  ' \
+       'of the sticks with your shirt to create a makeshift torch. You light the torch, revealing a wooden ' \
        'door to the left of you.'
 
-loc2 = 'an open clearing. Behind you is the hut you just left. It is twilight so you decide to keep your torch lit.' \
-       'How did you end up here? What were you doing in the hut before you fell unconscious? Ahead of you you spot' \
-       'some broken brush, you follow the tracks.'
+loc2 = 'in an open clearing. Behind you is the hut you just left. It is twilight so you decide to keep your ' \
+       'torch lit. How did you end up here? What were you doing in the hut before you fell unconscious? Ahead of ' \
+       'you you spot some broken brush, you follow the tracks.'
 
 loc3 = 'c'
 
@@ -33,7 +34,8 @@ playerLocation = locations[0]
 def startGame():
     displayTitle()
     print('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, this is',
-          'the story of your most recent intrepid adventure.'+'\n')
+          'the story of your most recent intrepid adventure.' + '\n')
+    input('Press enter to begin.' + '\n')
     displayScore(score)
     game(score, locations)
 
@@ -48,7 +50,7 @@ def displayScore(score):
 
 # location display routine
 def displayLocation(location):
-    print('You find yourself in ' + location + '\n')
+    print('You find yourself ' + location + '\n')
 
 # main game routine
 def game(score, locations):
@@ -60,6 +62,7 @@ def game(score, locations):
             score += 5
             displayScore(score)
             input('Press enter to complete the game.' + '\n')
+            sys.stdout.flush()
             endGame()
             return
         locationCounter += 1
@@ -67,6 +70,7 @@ def game(score, locations):
         score += 5
         displayScore(score)
         input('Press enter to move to the next location.'+'\n')
+        sys.stdout.flush()
 
 # end of game routine
 def endGame():
@@ -75,9 +79,11 @@ def endGame():
     displayCopyright()
     print('I hope you enjoyed playing this game. See you soon!' + '\n')
 
+#copyright message display routine
 def displayCopyright():
     print('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
           ' use is permitted.' + '\n')
+
 
 startGame()
 
