@@ -16,11 +16,18 @@ loc2 = 'in an open clearing. Behind you is the hut you just left. It is twilight
        'torch lit. How did you end up here? What were you doing in the hut before you fell unconscious? Ahead of ' \
        'you you spot some broken brush, you follow the tracks.'
 
-loc3 = 'c'
+loc3 = 'surrounded by trees. On the path in front of you lay strange markings, they seem to lead somewhere so you ' \
+       'follow them. Eventually you realise that they are your own footsteps. It is clear that you were running. ' \
+       'What could you have been running from?'
 
-loc4 = 'd'
+loc4 = 'at the end of the tracks, what you find makes you step back a few paces. At your feet lies a glowing green ' \
+       'object. What is it? How did it get here? Suddenly, the glowing becomes more and more intense until you can ' \
+       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You turn' \
+       'on your heels and run as fast as your legs can muster.'
 
-loc5 = 'e'
+loc5 = 'being chased by the shadow. You keep running until you begin to find some signs of civilisation, then the ' \
+       'shadow stops chasing you. You continue to travel on until you manage to flag down a car to bring you to the ' \
+       'next town over. You will never return to those woods.'
 
 locations = [loc1, loc2, loc3, loc4, loc5]
 
@@ -29,6 +36,7 @@ locations = [loc1, loc2, loc3, loc4, loc5]
 score = 0
 
 playerLocation = locations[0]
+
 
 # starting routine
 def startGame():
@@ -39,18 +47,22 @@ def startGame():
     displayScore(score)
     game(score, locations)
 
+
 # title display routine
 def displayTitle():
     cprint(figlet_format('A Text Adventure!', font='big'),
            'white', attrs=['bold'])
 
+
 # score display routine
 def displayScore(score):
     print('Score:', score, '\n')
 
+
 # location display routine
 def displayLocation(location):
     print('You find yourself ' + location + '\n')
+
 
 # main game routine
 def game(score, locations):
@@ -65,12 +77,13 @@ def game(score, locations):
             sys.stdout.flush()
             endGame()
             return
-        locationCounter += 1
-        currentLocation = locations[locationCounter]
-        score += 5
-        displayScore(score)
-        input('Press enter to move to the next location.'+'\n')
-        sys.stdout.flush()
+        else:
+            locationCounter += 1
+            currentLocation = locations[locationCounter]
+            score += 5
+            displayScore(score)
+            input('Press enter to move to the next location.'+'\n')
+
 
 # end of game routine
 def endGame():
@@ -79,11 +92,11 @@ def endGame():
     displayCopyright()
     print('I hope you enjoyed playing this game. See you soon!' + '\n')
 
-#copyright message display routine
+
+# copyright message display routine
 def displayCopyright():
     print('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
           ' use is permitted.' + '\n')
 
 
 startGame()
-
