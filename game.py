@@ -1,7 +1,7 @@
 # a simple text adventure game with four locations
 # Written by: Murray Coueslant, Date: 2017/09/08
 
-import sys
+
 from pyfiglet import figlet_format
 from termcolor import cprint
 
@@ -41,9 +41,8 @@ playerLocation = locations[0]
 # starting routine
 def startGame():
     displayTitle()
-    print('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, this is',
-          'the story of your most recent intrepid adventure.' + '\n')
-    input('Press enter to begin.' + '\n')
+    input('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, this is '
+          'the story of your most recent intrepid adventure. Press enter to begin.')
     displayScore(score)
     game(score, locations)
 
@@ -74,7 +73,6 @@ def game(score, locations):
             score += 5
             displayScore(score)
             input('Press enter to complete the game.' + '\n')
-            sys.stdout.flush()
             endGame()
             return
         else:
