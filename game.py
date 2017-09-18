@@ -5,6 +5,10 @@
 from pyfiglet import figlet_format
 from termcolor import cprint
 
+#variable definitions
+
+copyright = ('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
+          ' use is permitted.' + '\n')
 
 # location definitions
 
@@ -93,8 +97,7 @@ def endGame():
 
 # copyright message display routine
 def displayCopyright():
-    print('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
-          ' use is permitted.' + '\n')
+    print(copyright)
 
 
 startGame()
