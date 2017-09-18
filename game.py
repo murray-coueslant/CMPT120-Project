@@ -8,7 +8,8 @@ from termcolor import cprint
 
 copyright = ('This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. Fair'
           ' use is permitted.' + '\n')
-
+introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, '
+'this is the story of your most recent intrepid adventure. Press enter to begin.')
 # location definitions
 
 loc1 = 'in a dark room, around you you can feel some sticks. In your pocket you feel a lighter. You bundle some  ' \
@@ -44,8 +45,7 @@ playerLocation = locations[0]
 # starting routine
 def startGame():
     displayTitle()
-    input('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, this is '
-          'the story of your most recent intrepid adventure. Press enter to begin.')
+    input(introduction)
     displayScore(score)
     game(score, locations)
 
