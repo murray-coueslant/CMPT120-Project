@@ -31,7 +31,7 @@ def assignLocation(location, map):
     placed = False
     while not placed:
         if map[rand_row][rand_col] == None:
-            map[rand_row][rand_col] = location
+            map[rand_row][rand_col] = [location, False]
             placed = True
         else:
             rand_row = randint(0, 2)
@@ -42,7 +42,7 @@ def fillEmpty(map):
     for j in range(cols):
         for i in range(rows):
             if map[i][j] == None:
-                map[i][j] = 'There is nothing here.'
+                map[i][j] = ['There is nothing here.', False]
 
 
 generateMap(mapLocations)
