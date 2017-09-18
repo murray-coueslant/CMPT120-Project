@@ -22,8 +22,8 @@ loc3 = 'surrounded by trees. On the path in front of you lay strange markings, t
 
 loc4 = 'at the end of the tracks, what you find makes you step back a few paces. At your feet lies a glowing green ' \
        'object. What is it? How did it get here? Suddenly, the glowing becomes more and more intense until you can ' \
-       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You turn' \
-       'on your heels and run as fast as your legs can muster.'
+       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You ' \
+       'turn on your heels and run as fast as your legs can muster.'
 
 loc5 = 'being chased by the shadow. You keep running until you begin to find some signs of civilisation, then the ' \
        'shadow stops chasing you. You continue to travel on until you manage to flag down a car to bring you to the ' \
