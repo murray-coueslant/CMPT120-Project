@@ -1,6 +1,5 @@
-# a simple text adventure game with four locations
+# a simple text adventure game with five locations
 # Written by: Murray Coueslant, Date: 2017/09/08
-
 
 from pyfiglet import figlet_format
 from termcolor import cprint
