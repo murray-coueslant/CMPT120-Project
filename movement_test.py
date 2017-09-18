@@ -39,7 +39,7 @@ class Player:
             displayError(1)
 
     def getLocation(self):
-        print('The player is currently at:', gameMap[self.rowLocation][self.colLocation][0])
+        print(self.name, 'is currently at:', gameMap[self.rowLocation][self.colLocation][0])
 
 
 # variable and array definitions
@@ -96,14 +96,30 @@ def displayError(messageNo):
     print(message)
 
 
+def displayHelp():
+    print('Help message')
+
+
+def getCommand(player, command):
+    if command.lower() == 'north':
+        player.movePlayer('north')
+    elif command.lower() == 'east':
+        player.movePlayer('east')
+    elif command.lower() == 'south':
+        player.movePlayer('south')
+    elif command.lower() == 'west':
+        player.movePlayer('west')
+    elif command.lower() == 'help':
+        displayHelp()
+    else:
+        print('Unrecognised command, enter another.')
+        getCommand(input("Enter new command: "))
+
 generateMap(mapLocations)
 character = Player('Murray', 0, 1, 1)
-character.movePlayer("south")
-character.movePlayer("south")
-character.movePlayer("west")
-character.movePlayer("west")
-character.movePlayer("NORTH")
-character.movePlayer("north")
-character.movePlayer("north")
-
 character.getLocation()
+
+while 1:
+    getCommand(character, input('What would you like to do?: '))
+    character.getLocation()
+
