@@ -50,7 +50,7 @@ def startGame():
 # title display routine
 def displayTitle():
     cprint(figlet_format('A Text Adventure!', font='big'),
-           'white', attrs=['bold'])
+           'red', attrs=['bold'])
 
 
 # score display routine
