@@ -101,15 +101,15 @@ def displayHelp():
 
 
 def getCommand(player, command):
-    if command.lower() == 'north':
+    if command.lower() == 'north' or 'go north' or 'move north' or 'travel north':
         player.movePlayer('north')
-    elif command.lower() == 'east':
+    elif command.lower() == 'east' or 'go east' or 'move east' or 'travel east':
         player.movePlayer('east')
-    elif command.lower() == 'south':
+    elif command.lower() == 'south' or 'go south' or 'move south' or 'travel south':
         player.movePlayer('south')
-    elif command.lower() == 'west':
+    elif command.lower() == 'west' or 'go west' or 'move west' or 'travel west':
         player.movePlayer('west')
-    elif command.lower() == 'help':
+    elif command.lower() == 'help' or 'get help' or 'help me':
         displayHelp()
     else:
         print('Unrecognised command, enter another.')
