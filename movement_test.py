@@ -4,6 +4,7 @@
 # module imports
 from random import shuffle, randint
 
+
 # player class definition
 
 class Player:
@@ -21,12 +22,12 @@ class Player:
                 self.rowLocation += 1
         elif direction.lower() == 'south':
             self.rowLocation += 1
-            if self.rowLocation < 0:
+            if self.rowLocation > 2:
                 collisionMessage()
                 self.rowLocation -= 1
         elif direction.lower() == 'east':
             self.colLocation += 1
-            if self.colLocation < 0:
+            if self.colLocation > 2:
                 collisionMessage()
                 self.colLocation -= 1
         elif direction.lower() == 'west':
@@ -37,7 +38,8 @@ class Player:
         else:
             displayError(1)
 
-
+    def getLocation(self):
+        print('The player is currently at:', str(self.rowLocation) + ',', self.colLocation)
 
 
 # variable and array definitions
@@ -45,6 +47,7 @@ rows = 3
 cols = 3
 gameMap = [[None for i in range(cols)] for j in range(rows)]
 mapLocations = ['a', 'b', 'c', 'd', 'e', 'f']
+
 
 # map generator
 
@@ -94,3 +97,13 @@ def displayError(messageNo):
 
 
 generateMap(mapLocations)
+character = Player('Murray', 0, 1, 1)
+character.movePlayer("south")
+character.movePlayer("south")
+character.movePlayer("west")
+character.movePlayer("west")
+character.movePlayer("NORTH")
+character.movePlayer("north")
+character.movePlayer("north")
+
+character.getLocation()
