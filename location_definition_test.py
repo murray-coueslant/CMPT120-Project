@@ -18,7 +18,6 @@ def generateMap(locationList):
     numberOfLocations = len(locations)
     orderList = list(range(numberOfLocations))
     shuffle(orderList)
-    print(orderList)
     for i in orderList:
         assignLocation(locations[i], gameMap)
     fillEmpty(gameMap)
