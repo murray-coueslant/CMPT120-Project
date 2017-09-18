@@ -39,7 +39,7 @@ class Player:
             displayError(1)
 
     def getLocation(self):
-        print('The player is currently at:', str(self.rowLocation) + ',', self.colLocation)
+        print('The player is currently at:', gameMap[self.rowLocation][self.colLocation][0])
 
 
 # variable and array definitions
