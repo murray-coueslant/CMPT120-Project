@@ -1,4 +1,8 @@
 # CMPT120-Project
-Repository for CMPT120 project.
+Repository for the CMPT120 project.
 
-Running this project requires the module 'pyfiglet' in order for it to work correctly.
+This project requires the modules 'pyfiglet' and 'termcolor' in order for it to run correctly.
+
+To install these modules follow this guide: https://docs.python.org/3/installing/index.html with the modules shown below.
+
+PyFiglet: https://pypi.python.org/pypi/pyfiglet/0.7.5 Termcolor: https://pypi.python.org/pypi/termcolor
