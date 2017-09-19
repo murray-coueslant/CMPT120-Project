@@ -47,11 +47,12 @@ rows = 3
 cols = 3
 gameMap = [[None for i in range(cols)] for j in range(rows)]
 mapLocations = ['a', 'b', 'c', 'd', 'e', 'f']
-northCommands = ['north', 'go north', 'move north', 'travel north']
-eastCommands = ['east', 'go east', 'move east', 'travel east']
-southCommands = ['south', 'go south', 'move south', 'travel south']
-westCommands = ['west', 'go west', 'move west', 'travel west']
-helpCommands = ['help', 'help me', 'get help']
+northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
+eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
+southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
+westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
+helpCommands = ['h', 'help', 'help me', 'get help']
+quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
 # map generator
 
@@ -101,7 +102,9 @@ def displayError(messageNo):
 
 
 def displayHelp():
-    print('Help message')
+    print('Help:', '\n', 'Enter a command in the prompt, the possible commands are:', '\n', 'north, south, east, west'
+          '\n', 'go, move or travel + a direction', '\n', 'quit, exit, leave, end', '\n'
+          'or this help command, but you figured that one out, go you!')
 
 
 def getCommand(player, command):
@@ -115,6 +118,9 @@ def getCommand(player, command):
         player.movePlayer('west')
     elif command.lower() in helpCommands:
         displayHelp()
+    elif command.lower() in quitCommands:
+        input('Thanks for playing, press enter to end the game.')
+        quit()
     elif command.lower() == "" or None:
         print('Unrecognised command, enter another.')
         getCommand(character, input("Enter new command: "))
