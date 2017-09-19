@@ -18,29 +18,67 @@ class Player:
         if direction.lower() == 'north':
             self.rowLocation -= 1
             if self.rowLocation < 0:
-                collisionMessage()
+                collisionMessage(self)
                 self.rowLocation += 1
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > 2:
-                collisionMessage()
+                collisionMessage(self)
                 self.rowLocation -= 1
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > 2:
-                collisionMessage()
+                collisionMessage(self)
                 self.colLocation -= 1
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
-                collisionMessage()
+                collisionMessage(self)
                 self.colLocation += 1
+            else:
+                visitLocation()
         else:
-            displayError(1)
+            displayError(1, self)
 
-    def getLocation(self):
-        print(self.name, 'is currently at:', gameMap[self.rowLocation][self.colLocation][0])
+    def getLocation(self, map):
+        print(self.name, 'is currently at:', map.getLocation(self.colLocation, self.rowLocation))
 
+    def increaseScore(self):
+        self.score += 5
+
+# map class definition
+
+class map():
+    def __init__(self, rowSize, colSize, locations):
+        self.rowSize = rowSize
+        self.colSize = colSize
+        self.locations = locations
+        self.map = [[None for col in range(colSize)] for row in range(rowSize)]
+        numberOfLocations = len(self.locations)
+        orderList = list(range(numberOfLocations))
+        shuffle(orderList)
+        for i in orderList:
+            randRow = randint(0, 2)
+            randCol = randint(0, 2)
+            placed = False
+            while not placed:
+                if self.map[randRow][randCol] is None:
+                    self.map[randRow][randCol] = [self.locations[i], False]
+                    placed = True
+                else:
+                    randRow = randint(0, 2)
+                    randCol = randint(0, 2)
+        self.fillEmpty()
+
+
+    def fillEmpty(self):
+        for j in range(cols):
+            for i in range(rows):
+                if self.map[i][j] == None:
+                    self.map[i][j] = ['There is nothing here.', False]
+
+    def getLocation(self, xPos, yPos):
+        return self.map[yPos][xPos][0]
 
 # variable and array definitions
 rows = 3
@@ -54,48 +92,17 @@ westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
-# map generator
 
+# general game modules
 
-def generateMap(locationList):
-    locations = locationList
-    numberOfLocations = len(locations)
-    orderList = list(range(numberOfLocations))
-    shuffle(orderList)
-    for i in orderList:
-        assignLocation(locations[i], gameMap)
-    fillEmpty(gameMap)
-    print(gameMap)
-
-
-def assignLocation(location, map):
-    rand_row = randint(0, 2)
-    rand_col = randint(0, 2)
-    placed = False
-    while not placed:
-        if map[rand_row][rand_col] == None:
-            map[rand_row][rand_col] = [location, False]
-            placed = True
-        else:
-            rand_row = randint(0, 2)
-            rand_col = randint(0, 2)
-
-
-def fillEmpty(map):
-    for j in range(cols):
-        for i in range(rows):
-            if map[i][j] == None:
-                map[i][j] = ['There is nothing here.', False]
-
-
-def collisionMessage():
-    print('Collision, you cannot move this way.')
+def collisionMessage(player):
+    print('Collision, you cannot move this way. Choose another direction', player.name)
     return
 
 
-def displayError(messageNo):
+def displayError(messageNo, player):
     if messageNo == 1:
-        message = 'Incorrect direction command entered, please enter another.'
+        message = ('Incorrect direction command entered, please enter another,', player.name)
     else:
         message = 'Unknown error.'
     print(message)
@@ -128,11 +135,16 @@ def getCommand(player, command):
         print('Unrecognised command, enter another.')
         getCommand(character, input("Enter new command: "))
 
-generateMap(mapLocations)
+
+def visitLocation(locationRow, locationCol):
+    if 1:
+        return
+
+gameMap = map(3, 3, mapLocations)
 character = Player('Murray', 0, 1, 1)
-character.getLocation()
+character.getLocation(gameMap)
 
 while 1:
     getCommand(character, input('What would you like to do?: '))
-    character.getLocation()
+    character.getLocation(gameMap)
 
