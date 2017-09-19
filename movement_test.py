@@ -47,7 +47,11 @@ rows = 3
 cols = 3
 gameMap = [[None for i in range(cols)] for j in range(rows)]
 mapLocations = ['a', 'b', 'c', 'd', 'e', 'f']
-
+northCommands = ['north', 'go north', 'move north', 'travel north']
+eastCommands = ['east', 'go east', 'move east', 'travel east']
+southCommands = ['south', 'go south', 'move south', 'travel south']
+westCommands = ['west', 'go west', 'move west', 'travel west']
+helpCommands = ['help', 'help me', 'get help']
 
 # map generator
 
@@ -101,19 +105,22 @@ def displayHelp():
 
 
 def getCommand(player, command):
-    if command.lower() == 'north' or 'go north' or 'move north' or 'travel north':
+    if command.lower() in northCommands:
         player.movePlayer('north')
-    elif command.lower() == 'east' or 'go east' or 'move east' or 'travel east':
+    elif command.lower() in eastCommands:
         player.movePlayer('east')
-    elif command.lower() == 'south' or 'go south' or 'move south' or 'travel south':
+    elif command.lower() in southCommands:
         player.movePlayer('south')
-    elif command.lower() == 'west' or 'go west' or 'move west' or 'travel west':
+    elif command.lower() in westCommands:
         player.movePlayer('west')
-    elif command.lower() == 'help' or 'get help' or 'help me':
+    elif command.lower() in helpCommands:
         displayHelp()
+    elif command.lower() == "" or None:
+        print('Unrecognised command, enter another.')
+        getCommand(character, input("Enter new command: "))
     else:
         print('Unrecognised command, enter another.')
-        getCommand(input("Enter new command: "))
+        getCommand(character, input("Enter new command: "))
 
 generateMap(mapLocations)
 character = Player('Murray', 0, 1, 1)
