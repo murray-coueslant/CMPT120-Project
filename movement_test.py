@@ -14,7 +14,7 @@ class Player:
         self.rowLocation = rowLocation
         self.colLocation = colLocation
 
-    def movePlayer(self, direction):
+    def movePlayer(self, direction, map):
         if direction.lower() == 'north':
             self.rowLocation -= 1
             if self.rowLocation < 0:
@@ -24,14 +24,14 @@ class Player:
                 visitLocation(self.rowLocation, self.colLocation, self)
         elif direction.lower() == 'south':
             self.rowLocation += 1
-            if self.rowLocation > 2:
+            if self.rowLocation > (map.rowSize -1):
                 collisionMessage(self)
                 self.rowLocation -= 1
             else:
                 visitLocation(self.rowLocation, self.colLocation, self)
         elif direction.lower() == 'east':
             self.colLocation += 1
-            if self.colLocation > 2:
+            if self.colLocation > (map.colSize - 1):
                 collisionMessage(self)
                 self.colLocation -= 1
             else:
@@ -65,7 +65,7 @@ class Player:
         self.score += 5
 
     def displayScore(self):
-        print(self.getName(), 'your score is:', self.getScore())
+        print(self.getName()+',', 'your score is:', self.getScore())
 
 # map class definition
 
@@ -93,10 +93,13 @@ class map():
 
 
     def fillEmpty(self):
-        for j in range(cols):
-            for i in range(rows):
+        for j in range(self.colSize):
+            for i in range(self.rowSize):
                 if self.map[i][j] == None:
-                    self.map[i][j] = ['There is nothing here.', False]
+                    self.map[i][j] = ['There is nothing here.', 'Flag']
+
+    def getSizes(self):
+        return self.colSize, self.rowSize
 
     def getLocation(self, rowPos, colPos):
         return self.map[rowPos][colPos][0]
@@ -110,10 +113,10 @@ class map():
     def getMap(self):
         return self.map
 
+
 # variable and array definitions
-rows = 3
-cols = 3
-gameMap = [[None for i in range(cols)] for j in range(rows)]
+copyright = 'This game is property of Murray Coueslant. Any enquiries can be sent to murray.coueslant1@marist.edu. \
+ Fair use is permitted.' + '\n'
 mapLocations = ['a', 'b', 'c', 'd', 'e', 'f']
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
@@ -146,48 +149,56 @@ def displayHelp():
 
 def getCommand(player, command):
     if command.lower() in northCommands:
-        player.movePlayer('north')
+        player.movePlayer('north', gameMap)
     elif command.lower() in eastCommands:
-        player.movePlayer('east')
+        player.movePlayer('east', gameMap)
     elif command.lower() in southCommands:
-        player.movePlayer('south')
+        player.movePlayer('south', gameMap)
     elif command.lower() in westCommands:
-        player.movePlayer('west')
+        player.movePlayer('west', gameMap)
     elif command.lower() in helpCommands:
         displayHelp()
     elif command.lower() in quitCommands:
         input('Thanks for playing, press enter to end the game.')
         quit()
-    elif command.lower() == "" or None:
+    elif command.lower() == '' or None:
         print('Unrecognised command, enter another.')
-        getCommand(character, input("Enter new command: "))
+        getCommand(character, input('Enter new command: '))
     else:
         print('Unrecognised command, enter another.')
-        getCommand(character, input("Enter new command: "))
+        getCommand(character, input('Enter new command: '))
 
 
 def visitLocation(locationRow, locationCol, player):
-    if gameMap.getVisited(locationRow, locationCol) is False:
+    if gameMap.getVisited(locationRow, locationCol) == 'Flag':
+        gameMap.setVisited(locationRow, locationCol)
+    elif gameMap.getVisited(locationRow, locationCol) is False:
         player.increaseScore()
         gameMap.setVisited(locationRow, locationCol)
     elif gameMap.getVisited(locationRow, locationCol) is True:
         print('You have already discovered this location!')
-def checkVisited(map):
+
+
+def checkVisited(mapObject):
     visitedCount = 0
+    map = mapObject.getMap()
+    cols, rows = mapObject.getSizes()
     for j in range(cols):
         for i in range(rows):
-            if map[i][j] == True:
+            if map[i][j][1] is True:
                 visitedCount += 1
     return visitedCount
 
+
 def endGame():
-    print('\n' + 'Congratulations, you have made it home safely. You rest for a few days and then return to normal '
-          'life.' + '\n')
-    displayCopyright()
+    print('\n' + 'Congratulations, you have explored the whole island!'+'\n')
+    print(copyright)
     print('I hope you enjoyed playing this game. See you soon!' + '\n')
+    quit()
+
 
 gameMap = map(3, 3, mapLocations)
-character = Player('Murray', 0, 1, 1)
+character = Player(input('Enter the name of your character: '), 0, 1, 1)
 character.getLocation(gameMap)
 visitLocation(1, 1, character)
 character.displayScore()
@@ -195,7 +206,7 @@ while 1:
     getCommand(character, input('What would you like to do?: '))
     character.getLocation(gameMap)
     character.displayScore()
-    count = checkVisited(gameMap.getMap())
-    print(count)
-    if count == 9:
+    count = checkVisited(gameMap)
+    if count == gameMap.rowSize * gameMap.colSize:
+        # character.displayScore()
         endGame()
