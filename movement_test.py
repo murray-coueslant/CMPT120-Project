@@ -21,45 +21,45 @@ class Player:
                 game.collisionMessage(self)
                 self.rowLocation += 1
             else:
-                self.visitLocation()
+                self.visitLocation(map)
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > (map.rowSize -1):
                 game.collisionMessage(self)
                 self.rowLocation -= 1
             else:
-                self.visitLocation()
+                self.visitLocation(map)
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > (map.colSize - 1):
                 game.collisionMessage(self)
                 self.colLocation -= 1
             else:
-                self.visitLocation()
+                self.visitLocation(map)
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
                 game.collisionMessage(self)
                 self.colLocation += 1
             else:
-                self.visitLocation()
+                self.visitLocation(map)
         else:
             game.displayError(1, self)
 
-    def visitLocation(self):
-        if map.getVisited(self.rowLocation, self.colLocation) == 'Flag':
-            map.setVisited(self.rowLocation, self.colLocation)
-        elif map.getVisited(self.rowLocation, self.colLocation) is False:
+    def visitLocation(self, map):
+        if map.getVisited(self) == 'Flag':
+            map.setVisited(self)
+        elif map.getVisited(self) is False:
             self.increaseScore()
-            map.setVisited(self.rowLocation, self.colLocation)
-        elif map.getVisited(self.rowLocation, self.colLocation) is True:
+            map.setVisited(self)
+        elif map.getVisited(self) is True:
             print('You have already discovered this location!')
 
     def getName(self):
         return self.name
 
     def getLocation(self, map):
-        print(self.name, 'is currently at:', map.getLocation(self.colLocation, self.rowLocation))
+        print(self.name, 'is currently at:', map.getLocation(self))
 
     def getXPos(self):
         return self.colLocation
@@ -79,7 +79,7 @@ class Player:
 # map class definition
 
 
-class map():
+class map:
     def __init__(self, rowSize, colSize, locations):
         self.rowSize = rowSize
         self.colSize = colSize
@@ -89,18 +89,14 @@ class map():
         orderList = list(range(numberOfLocations))
         shuffle(orderList)
         for i in orderList:
-            randRow = randint(0, (self.rowSize-1))
-            randCol = randint(0, (self.colSize-1))
-            print(randRow, randCol)
+            randRow, randCol = self.randomRowCol()
             placed = False
             while not placed:
-                print(self.rowSize, self.colSize, randRow, randCol)
                 if self.map[randRow][randCol] is None:
                     self.map[randRow][randCol] = [self.locations[i], False]
                     placed = True
                 else:
-                    randRow = randint(0, (self.rowSize-1))
-                    randCol = randint(0, (self.colSize-1))
+                    randRow, randCol = self.randomRowCol()
         self.fillEmpty()
 
     def fillEmpty(self):
@@ -119,17 +115,21 @@ class map():
                     visitedCount += 1
         return visitedCount
 
+    def randomRowCol(self):
+        randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
+        return randRow, randCol
+
     def getSizes(self):
         return self.colSize, self.rowSize
 
-    def getLocation(self, rowPos, colPos):
-        return self.map[rowPos][colPos][0]
+    def getLocation(self, player):
+        return self.map[player.rowLocation][player.colLocation][0]
 
-    def getVisited(self, rowPos, colPos):
-        return self.map[rowPos][colPos][1]
+    def getVisited(self, player):
+        return self.map[player.rowLocation][player.colLocation][1]
 
-    def setVisited(self, rowPos, colPos):
-        self.map[rowPos][colPos][1] = True
+    def setVisited(self, player):
+        self.map[player.rowLocation][player.colLocation][1] = True
 
     def getMap(self):
         return self.map
@@ -182,8 +182,8 @@ class game():
 
 
 # variable and array definitions
-copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to \
-                     murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
+copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
+                    'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
 mapLocations = ['a', 'b', 'c', 'd', 'e', 'f']
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
@@ -197,7 +197,7 @@ gameMap = map(3, 3, mapLocations)
 
 character = Player(input('Enter the name of your character: '), 0, int(gameMap.rowSize/2), int(gameMap.colSize/2))
 character.getLocation(gameMap)
-character.visitLocation()
+character.visitLocation(gameMap)
 character.displayScore()
 while 1:
     game.getCommand(character, input('What would you like to do?: '), gameMap)
