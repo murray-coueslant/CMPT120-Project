@@ -94,12 +94,13 @@ class map():
             print(randRow, randCol)
             placed = False
             while not placed:
+                print(self.rowSize, self.colSize, randRow, randCol)
                 if self.map[randRow][randCol] is None:
                     self.map[randRow][randCol] = [self.locations[i], False]
                     placed = True
                 else:
-                    randRow = randint(0, rowSize)
-                    randCol = randint(0, colSize)
+                    randRow = randint(0, (self.rowSize-1))
+                    randCol = randint(0, (self.colSize-1))
         self.fillEmpty()
 
     def fillEmpty(self):
