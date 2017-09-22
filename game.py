@@ -7,35 +7,39 @@ from random import shuffle, randint
 
 # location definitions
 
-loc1 = 'in a dark room, around you you can feel some sticks. In your pocket you feel a lighter. You bundle some  ' \
-       'of the sticks with your shirt to create a makeshift torch. You light the torch, revealing a wooden ' \
-       'door to the left of you.'
+loc1 = ('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but the blue '
+        'expanse of the ocean. You contemplate how you got here, and how you are going to get home.')
 
-loc2 = 'in an open clearing. Behind you is the hut you just left. It is twilight so you decide to keep your ' \
-       'torch lit. How did you end up here? What were you doing in the hut before you fell unconscious? Ahead of ' \
-       'you you spot some broken brush, you follow the tracks.'
+loc2 = ('a dense rainforest. The sound of creatures in the bush is overwhelming, the smell is tropical. '
+        'You are afraid, a predator could appear at any time. You think about what would happen if you did '
+        'not return home.')
 
-loc3 = 'surrounded by trees. On the path in front of you lay strange markings, they seem to lead somewhere so you ' \
-       'follow them. Eventually you realise that they are your own footsteps. It is clear that you were running. ' \
-       'What could you have been running from?'
+loc3 = ('an open clearing. On the ground infront of you there is a pile of strange stones. You are not sure what '
+        'they are for. You wonder if there were once people here, and if so, where are they now?')
 
-loc4 = 'at the end of the tracks, what you find makes you step back a few paces. At your feet lies a glowing green ' \
-       'object. What is it? How did it get here? Suddenly, the glowing becomes more and more intense until you can ' \
-       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You turn' \
-       'on your heels and run as fast as your legs can muster.'
+loc4 = ('a roaring waterfall. The white wash rolls from the top of the collosal stones, plunging into a pool of dark '
+        'water. You wonder if there is anything down there, or maybe there is a secret passage behind the falls. '
+        'You attempt to find the passage, but your luck comes up dry.')
 
-loc5 = 'being chased by the shadow. You keep running until you begin to find some signs of civilisation, then the ' \
-       'shadow stops chasing you. You continue to travel on until you manage to flag down a car to bring you to the ' \
-       'next town over. You will never return to those woods.'
+loc5 = ('a strange cave front. There are remnants of exploration here, makeshift torches and tools. You decide that '
+        'it is likely not sensible to go into the cave without proper protection. You guess that people have before '
+        'you; and it has not ended well.')
 
-loc6 = ''
+loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is a rusting hull of a small sailboat '
+        'which is somehow still tied to the jetty. You wonder whether this was once the only connection this '
+        'islan had to the outside world.')
 
 # variable definitions
 
-introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up in a strange place, '
-                'this is the story of your most recent intrepid adventure. Press enter to begin.')
+introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
+                'it is your task to explore your surroundings. Press enter to begin.')
+ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
+ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
+helpMessage = ('Help:', '\n', 'Enter a command below, the possible commands are:', '\n', 'north, south, east, west'
+               '\n', 'go, move or travel + a direction', '\n', 'quit, exit, leave, end', '\n'
+               'or this help command, but you figured that one out, go you!')
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
@@ -61,39 +65,30 @@ class Player:
                 game.collisionMessage(self)
                 self.rowLocation += 1
             else:
-                self.visitLocation(map)
+                map.visitLocation(self)
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > (map.rowSize -1):
                 game.collisionMessage(self)
                 self.rowLocation -= 1
             else:
-                self.visitLocation(map)
+                map.visitLocation(self)
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > (map.colSize - 1):
                 game.collisionMessage(self)
                 self.colLocation -= 1
             else:
-                self.visitLocation(map)
+                map.visitLocation(self)
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
                 game.collisionMessage(self)
                 self.colLocation += 1
             else:
-                self.visitLocation(map)
+                map.visitLocation(self)
         else:
             game.displayError(1, self)
-
-    def visitLocation(self, map):
-        if map.getVisited(self) == 'Flag':
-            map.setVisited(self)
-        elif map.getVisited(self) is False:
-            self.increaseScore()
-            map.setVisited(self)
-        elif map.getVisited(self) is True:
-            print('You have already discovered this location!')
 
     def getName(self):
         return self.name
@@ -155,6 +150,15 @@ class map:
                     visitedCount += 1
         return visitedCount
 
+    def visitLocation(self, player):
+        if self.getVisited(player) == 'Flag':
+            self.setVisited(player)
+        elif self.getVisited(player) is False:
+            player.increaseScore()
+            self.setVisited(player)
+        elif self.getVisited(player) is True:
+            print('You have already discovered this location!')
+
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
         return randRow, randCol
@@ -189,9 +193,7 @@ class game:
         print(message)
 
     def displayHelp(self):
-        print('Help:', '\n', 'Enter a command below, the possible commands are:', '\n', 'north, south, east, west'
-              '\n', 'go, move or travel + a direction', '\n', 'quit, exit, leave, end', '\n'
-              'or this help command, but you figured that one out, go you!')
+        print(helpMessage)
 
     def getCommand(self, player, command, map):
         if command.lower() in northCommands:
@@ -209,14 +211,14 @@ class game:
             quit()
         elif command.lower() == '' or None:
             print('Unrecognised command, enter another.')
-            self.getCommand(player, input('Enter new command: '))
+            self.getCommand(player, input('Enter new command: '), map)
         else:
             print('Unrecognised command, enter another.')
-            self.getCommand(player, input('Enter new command: '))
+            self.getCommand(player, input('Enter new command: '), map)
 
     def gameLoop(self, player, gameMap):
         player.getLocation(gameMap)
-        player.visitLocation(gameMap)
+        gameMap.visitLocation(player)
         player.displayScore()
         while 1:
             self.getCommand(player, input('What would you like to do?: '), gameMap)
@@ -227,9 +229,9 @@ class game:
                 self.endGame()
 
     def endGame(self):
-        print('\n' + 'Congratulations, you have explored the whole island!' + '\n')
+        print(ending1)
         print(copyrightMessage)
-        print('I hope you enjoyed playing this game. See you soon!' + '\n')
+        print(ending2)
         quit()
 
 
@@ -250,8 +252,7 @@ def startGame():
 
 # title display routine
 def displayTitle():
-    cprint(figlet_format('A Text Adventure!', font='big'),
-           'white', attrs=['bold'])
+    cprint(figlet_format('A Text Adventure!', font='big'), 'white', attrs=['bold'])
 
 
 startGame()
