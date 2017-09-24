@@ -1,11 +1,11 @@
-# a
+# a more complex text adventure game, with a randomly generated map and player control
 # Written by: Murray Coueslant, Date: 2017/09/08
 
 from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
 
-# location definitions
+# location definitions, these are the places the player can visit
 
 loc1 = ('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but the blue '
         'expanse of the ocean. You contemplate how you got here, and how you are going to get home.')
@@ -27,9 +27,10 @@ loc5 = ('a strange cave front. There are remnants of exploration here, makeshift
 
 loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is a rusting hull of a small sailboat '
         'which is somehow still tied to the jetty. You wonder whether this was once the only connection this '
-        'islan had to the outside world.')
+        'island had to the outside world.')
 
-# variable definitions
+# variable definitions, these are things which are used often like message strings etc... or things which would make
+# code look ugly if used often in their normal form
 
 introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
                 'it is your task to explore your surroundings. Press enter to begin.')
@@ -48,15 +49,21 @@ westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
-# player class definition
+# player class definition, the player class has a set of methods which apply to the character which the user is
+# controlling
 
 
 class Player:
+    # initialising the variables which store the essential data for the player object
     def __init__(self, name, score, rowLocation, colLocation):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
         self.colLocation = colLocation
+
+    # this method is used to change the location of the player within the world map, it takes a direction in the form
+    # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
+    # once decided it modifies the current location of the player in the correct way for the desired direction
 
     def movePlayer(self, direction, map):
         if direction.lower() == 'north':
@@ -93,8 +100,13 @@ class Player:
     def getName(self):
         return self.name
 
+    # the getLocation method is what displays the current location of the character to the user. It has two different
+    # messages depending on whether or not there is a special location at the player's current position
     def getLocation(self, map):
-        print(self.name, 'is currently at:', map.getLocation(self))
+        if map.getLocation(self) == 'There is nothing here.':
+            print(self.name, 'finds nothing, you should keep exploring.')
+        else:
+            print(self.name, 'is currently at', map.getLocation(self))
 
     def getXPos(self):
         return self.colLocation
@@ -111,7 +123,8 @@ class Player:
     def displayScore(self):
         print(self.getName()+',', 'your score is:', self.getScore())
 
-# map class definition
+# map class definition, the map class contains the required variables and methods pertaining to the world map for the
+# game. the methods encompass things such as filling the map with locations on startup etc...
 
 
 class map:
@@ -119,13 +132,19 @@ class map:
         self.rowSize = rowSize
         self.colSize = colSize
         self.locations = locations
+        # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for col in range(colSize)] for row in range(rowSize)]
         numberOfLocations = len(self.locations)
         orderList = list(range(numberOfLocations))
+        # the program uses the shuffle command from the random library to determine the positions of the six special
+        # locations in the map
         shuffle(orderList)
+        # this for loop places the six shuffled locations in six random positions on the map
         for i in orderList:
             randRow, randCol = self.randomRowCol()
             placed = False
+            # while loop with a nested if statement which ensures each of the six locations is placed in a distinct
+            # location and that two locations are not placed at the same coordinate
             while not placed:
                 if self.map[randRow][randCol] is None:
                     self.map[randRow][randCol] = [self.locations[i], False]
@@ -134,12 +153,15 @@ class map:
                     randRow, randCol = self.randomRowCol()
         self.fillEmpty()
 
+    # the fillEmpty routine fills the remaining squares with a default location value and a boolean flag for use when
+    # checking if the player should be given points for visiting a location
     def fillEmpty(self):
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
                     self.map[i][j] = ['There is nothing here.', 'Flag']
 
+    # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
         visitedCount = 0
         map = self.getMap()
@@ -150,6 +172,8 @@ class map:
                     visitedCount += 1
         return visitedCount
 
+    # this method is used to 'visit' a location on the map by changing its flag value and increasing the player's score
+    # if it is a previously unvisited special location
     def visitLocation(self, player):
         if self.getVisited(player) == 'Flag':
             self.setVisited(player)
@@ -179,12 +203,15 @@ class map:
         return self.map
 
 
-# game class
+# game class, the game class contains any of the methods which pertain to the general running of the game
 class game:
+    # method prints a collision message when the player attempts to move off of the edges of the map
     def collisionMessage(self, player):
         print('Collision, you cannot move this way. Choose another direction', player.name + '.')
         return
 
+    # a versatile error display function which can be expanded with many possible errors using error codes, prints
+    # predefined error messages
     def displayError(self, messageNo, player):
         if messageNo == 1:
             message = ('Incorrect direction command entered, please enter another,', player.name)
@@ -195,6 +222,8 @@ class game:
     def displayHelp(self):
         print(helpMessage)
 
+    # the getCommand method is the place where the user input is parsed and the correct action performed depending on
+    # the command entered
     def getCommand(self, player, command, map):
         if command.lower() in northCommands:
             player.movePlayer('north', map)
@@ -207,8 +236,7 @@ class game:
         elif command.lower() in helpCommands:
             self.displayHelp()
         elif command.lower() in quitCommands:
-            input('Thanks for playing, press enter to end the game.')
-            quit()
+            self.endGame()
         elif command.lower() == '' or None:
             print('Unrecognised command, enter another.')
             self.getCommand(player, input('Enter new command: '), map)
@@ -216,17 +244,25 @@ class game:
             print('Unrecognised command, enter another.')
             self.getCommand(player, input('Enter new command: '), map)
 
+    # this method is the main game loop which is called at the start of the game and runs until the end of the process
     def gameLoop(self, player, gameMap):
         player.getLocation(gameMap)
         gameMap.visitLocation(player)
         player.displayScore()
+        endFlag = False
         while 1:
             self.getCommand(player, input('What would you like to do?: '), gameMap)
             player.getLocation(gameMap)
             player.displayScore()
             count = gameMap.checkVisited()
             if count == gameMap.rowSize * gameMap.colSize:
-                self.endGame()
+                if endFlag is False:
+                    decision = input('Would you like to keep exploring? (Y or N): ')
+                    if decision.lower() == 'y':
+                        endFlag = True
+                        print('Enter a quit command to leave the game once you are done exploring!')
+                    else:
+                        self.endGame()
 
     def endGame(self):
         print(ending1)
@@ -235,24 +271,23 @@ class game:
         quit()
 
 
-# class instantiations
+# class instantiations, defines the size of the map and the locations to place in it
 game = game()
 gameMap = map(3, 3, mapLocations)
 
+
+# title display routine
+def displayTitle():
+    cprint(figlet_format('A Text Adventure!', font='big'), 'white', attrs=['bold'])
+
+
 # starting routine
-
-
 def startGame():
     displayTitle()
     input(introduction)
     character = Player(input('Enter the name of your character: '), 0, int(gameMap.rowSize / 2),
                        int(gameMap.colSize / 2))
     game.gameLoop(character, gameMap)
-
-
-# title display routine
-def displayTitle():
-    cprint(figlet_format('A Text Adventure!', font='big'), 'white', attrs=['bold'])
 
 
 startGame()
