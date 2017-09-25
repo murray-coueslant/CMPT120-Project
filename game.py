@@ -206,20 +206,23 @@ class map:
 # game class, the game class contains any of the methods which pertain to the general running of the game
 class game:
     # method prints a collision message when the player attempts to move off of the edges of the map
-    def collisionMessage(self, player):
+    @staticmethod
+    def collisionMessage(player):
         print('Collision, you cannot move this way. Choose another direction', player.name + '.')
         return
 
     # a versatile error display function which can be expanded with many possible errors using error codes, prints
     # predefined error messages
-    def displayError(self, messageNo, player):
+    @staticmethod
+    def displayError(messageNo, player):
         if messageNo == 1:
             message = ('Incorrect direction command entered, please enter another,', player.name)
         else:
             message = 'Unknown error.'
         print(message)
 
-    def displayHelp(self):
+    @staticmethod
+    def displayHelp():
         print(helpMessage)
 
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
@@ -264,7 +267,8 @@ class game:
                     else:
                         self.endGame()
 
-    def endGame(self):
+    @staticmethod
+    def endGame():
         print(ending1)
         print(copyrightMessage)
         print(ending2)
