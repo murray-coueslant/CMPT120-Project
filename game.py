@@ -75,7 +75,7 @@ class Player:
                 map.visitLocation(self)
         elif direction.lower() == 'south':
             self.rowLocation += 1
-            if self.rowLocation > (map.rowSize -1):
+            if self.rowLocation > (map.rowSize - 1):
                 game.collisionMessage(self)
                 self.rowLocation -= 1
             else:
@@ -133,7 +133,7 @@ class map:
         self.colSize = colSize
         self.locations = locations
         # defines a 2D array of a certain size which is defined when the class is instantiated
-        self.map = [[None for col in range(colSize)] for row in range(rowSize)]
+        self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
         numberOfLocations = len(self.locations)
         orderList = list(range(numberOfLocations))
         # the program uses the shuffle command from the random library to determine the positions of the six special
