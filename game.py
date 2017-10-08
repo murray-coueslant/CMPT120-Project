@@ -38,8 +38,8 @@ ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
 ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
-helpMessage = ('Help:', '\n', 'Enter a command below, the possible commands are:', '\n', 'north, south, east, west'
-               '\n', 'go, move or travel + a direction', '\n', 'quit, exit, leave, end', '\n'
+helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n' + 'north, south, east, west'
+               + '\n' + 'go, move or travel + a direction' + '\n' + 'quit, exit, leave, end' + '\n' +
                'or this help command, but you figured that one out, go you!')
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
