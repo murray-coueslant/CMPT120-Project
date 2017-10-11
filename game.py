@@ -29,6 +29,12 @@ loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is
         'which is somehow still tied to the jetty. You wonder whether this was once the only connection this '
         'island had to the outside world.')
 
+loc7 = ('a')
+
+loc8 = ('b')
+
+loc9 = ('c')
+
 # variable definitions, these are things which are used often like message strings etc... or things which would make
 # code look ugly if used often in their normal form
 
@@ -38,15 +44,18 @@ ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
 ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
-helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n' + 'north, south, east, west'
-               + '\n' + 'go, move or travel + a direction' + '\n' + 'quit, exit, leave, end' + '\n' +
-               'or this help command, but you figured that one out, go you!')
+helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n' + '\t' + 'north, south,' +
+               ' east, west' + '\n' + '\t' + 'go, move or travel + a direction' + '\n' + '\t' + 'quit, exit, leave, end'
+               + '\n' + 'or this help command, but you figured that one out, go you!')
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
 southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
 westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
+scoreCommands = ['score', 'points', 'total']
+yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
+noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
@@ -179,6 +188,7 @@ class map:
             self.setVisited(player)
         elif self.getVisited(player) is False:
             player.increaseScore()
+            player.displayScore()
             self.setVisited(player)
         elif self.getVisited(player) is True:
             print('You have already discovered this location!')
@@ -238,6 +248,8 @@ class game:
             player.movePlayer('west', map)
         elif command.lower() in helpCommands:
             self.displayHelp()
+        elif command.lower() in scoreCommands:
+            player.displayScore()
         elif command.lower() in quitCommands:
             self.endGame()
         elif command.lower() == '' or None:
@@ -251,20 +263,18 @@ class game:
     def gameLoop(self, player, gameMap):
         player.getLocation(gameMap)
         gameMap.visitLocation(player)
-        player.displayScore()
         endFlag = False
         while 1:
             self.getCommand(player, input('What would you like to do?: '), gameMap)
             player.getLocation(gameMap)
-            player.displayScore()
             count = gameMap.checkVisited()
             if count == gameMap.rowSize * gameMap.colSize:
-                if endFlag is False:
+                while endFlag is False:
                     decision = input('Would you like to keep exploring? (Y or N): ')
-                    if decision.lower() == 'y':
+                    if decision.lower() in yesCommands:
                         endFlag = True
                         print('Enter a quit command to leave the game once you are done exploring!')
-                    else:
+                    elif decision.lower() in noCommands:
                         self.endGame()
 
     @staticmethod
