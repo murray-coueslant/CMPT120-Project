@@ -78,28 +78,28 @@ class Player:
         if direction.lower() == 'north':
             self.rowLocation -= 1
             if self.rowLocation < 0:
-                game.collisionMessage(self)
+                game.displayError(2,self)
                 self.rowLocation += 1
             else:
                 map.visitLocation(self)
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > (map.rowSize - 1):
-                game.collisionMessage(self)
+                game.displayError(2, self)
                 self.rowLocation -= 1
             else:
                 map.visitLocation(self)
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > (map.colSize - 1):
-                game.collisionMessage(self)
+                game.displayError(2, self)
                 self.colLocation -= 1
             else:
                 map.visitLocation(self)
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
-                game.collisionMessage(self)
+                game.displayError(2, self)
                 self.colLocation += 1
             else:
                 map.visitLocation(self)
@@ -215,18 +215,17 @@ class map:
 
 # game class, the game class contains any of the methods which pertain to the general running of the game
 class game:
-    # method prints a collision message when the player attempts to move off of the edges of the map
-    @staticmethod
-    def collisionMessage(player):
-        print('Collision, you cannot move this way. Choose another direction', player.name + '.')
-        return
 
     # a versatile error display function which can be expanded with many possible errors using error codes, prints
     # predefined error messages
     @staticmethod
     def displayError(messageNo, player):
         if messageNo == 1:
-            message = ('Incorrect direction command entered, please enter another,', player.name)
+            message = 'Incorrect direction command entered, please enter another,', player.name
+        elif messageNo == 2:
+            message = 'Collision, you cannot move this way. Choose another direction, ' + player.name + '.'
+        elif messageNo == 3:
+            message = 'Unrecognised command, please enter another, ' + player.name + '.'
         else:
             message = 'Unknown error.'
         print(message)
@@ -253,10 +252,10 @@ class game:
         elif command.lower() in quitCommands:
             self.endGame()
         elif command.lower() == '' or None:
-            print('Unrecognised command, enter another.')
+            self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
         else:
-            print('Unrecognised command, enter another.')
+            self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
 
     # this method is the main game loop which is called at the start of the game and runs until the end of the process
