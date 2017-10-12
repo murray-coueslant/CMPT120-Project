@@ -44,8 +44,8 @@ ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
 ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
-helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n' + '\t' + 'north, south,' +
-               ' east, west' + '\n' + '\t' + 'go, move or travel + a direction' + '\n' + '\t' + 'quit, exit, leave, end'
+helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n\t' + 'north, south,' +
+               ' east, west' + '\n\t' + 'go, move or travel + a direction' + '\n\t' + 'quit, exit, leave, end'
                + '\n' + 'or this help command, but you figured that one out, go you!')
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
@@ -64,7 +64,7 @@ quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, score, rowLocation, colLocation):
+    def __init__(self, name, rowLocation, colLocation, score=0):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
@@ -264,7 +264,7 @@ class game:
         gameMap.visitLocation(player)
         endFlag = False
         while 1:
-            self.getCommand(player, input('What would you like to do?: '), gameMap)
+            self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
             player.getLocation(gameMap)
             count = gameMap.checkVisited()
             if count == gameMap.rowSize * gameMap.colSize:
@@ -278,9 +278,7 @@ class game:
 
     @staticmethod
     def endGame():
-        print(ending1)
-        print(copyrightMessage)
-        print(ending2)
+        print(ending1 + copyrightMessage + ending2)
         quit()
 
 
@@ -298,7 +296,7 @@ def displayTitle():
 def startGame():
     displayTitle()
     input(introduction)
-    character = Player(input('Enter the name of your character: '), 0, int(gameMap.rowSize / 2),
+    character = Player(input('Enter the name of your character: '), int(gameMap.rowSize / 2),
                        int(gameMap.colSize / 2))
     game.gameLoop(character, gameMap)
 
