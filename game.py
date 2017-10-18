@@ -195,7 +195,7 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'Nothing here', 'Flag']
+                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag']
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -232,14 +232,25 @@ class map:
                 spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
         return spacedLocations, maxLen
 
+    def printRow(self, row):
+        output = '|'
+        for val in row:
+            output += str(val) + '|'
+        print(output)
+
+    def printSeparator(self, length, row):
+        output = '+'
+        dashLength = '-' * length
+        for val in row:
+            output += dashLength + '+'
+        print(output)
+
     def displayMap(self):
         spacedLocations, maxLen = self.getSpacedLocations(self.map)
-        seperator = '+' + str('-' * maxLen) + '+' + str('-' * maxLen) + '+' + str('-' * maxLen) + '+'
-        tile = '|{}|{}|{}|'
-        print(seperator)
-        for i in range(self.rowSize):
-            print(tile.format(spacedLocations[i][0], spacedLocations[i][1], spacedLocations[i][2]))
-            print(seperator)
+        self.printSeparator(maxLen, spacedLocations[0])
+        for row in spacedLocations:
+            self.printRow(row)
+            self.printSeparator(maxLen, row)
 
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
