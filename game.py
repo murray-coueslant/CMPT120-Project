@@ -204,7 +204,7 @@ class map:
         cols, rows = self.getSizes()
         for j in range(cols):
             for i in range(rows):
-                if map[i][j][1] is True:
+                if map[i][j][2] is True:
                     visitedCount += 1
         return visitedCount
 
@@ -271,10 +271,10 @@ class map:
         return self.map[player.rowLocation][player.colLocation][0]
 
     def getVisited(self, player):
-        return self.map[player.rowLocation][player.colLocation][1]
+        return self.map[player.rowLocation][player.colLocation][2]
 
     def setVisited(self, player):
-        self.map[player.rowLocation][player.colLocation][1] = True
+        self.map[player.rowLocation][player.colLocation][2] = True
 
     def getMap(self):
         return self.map
@@ -353,7 +353,7 @@ class game:
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(3, 3, mapLocations, shortLocations)
+gameMap = map(5, 5, mapLocations, shortLocations)
 
 
 # title display routine
