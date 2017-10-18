@@ -160,7 +160,7 @@ class Player:
 
 
 class map:
-    def __init__(self, rowSize, colSize, locations):
+    def __init__(self, rowSize, colSize, locations, shortLocations):
         self.rowSize = rowSize
         self.colSize = colSize
         self.locations = locations
@@ -230,13 +230,16 @@ class map:
                 else:
                     whitespace = (maxLen - len(map[i][j][1])) * ' '
                 spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
-        return spacedLocations
+        return spacedLocations, maxLen
 
     def displayMap(self):
-        spacedLocations = self.getSpacedLocations(self.map)
-        tile = '|{}|'
+        spacedLocations, maxLen = self.getSpacedLocations(self.map)
+        seperator = '+' + str('-' * maxLen) + '+' + str('-' * maxLen) + '+' + str('-' * maxLen) + '+'
+        tile = '|{}|{}|{}|'
+        print(seperator)
         for i in range(self.rowSize):
-            print(tile.format(spacedLocations[i][0]), tile.format(spacedLocations[i][1]), tile.format(spacedLocations[i][2]))
+            print(tile.format(spacedLocations[i][0], spacedLocations[i][1], spacedLocations[i][2]))
+            print(seperator)
 
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
@@ -339,7 +342,7 @@ class game:
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(3, 3, mapLocations)
+gameMap = map(3, 3, mapLocations, shortLocations)
 
 
 # title display routine
