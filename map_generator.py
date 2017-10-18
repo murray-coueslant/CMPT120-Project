@@ -168,7 +168,6 @@ class map:
         self.shortLocations = shortLocations
         # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
-        self.spacedLocations = self.getSpacedLocations(self.map)
         numberOfLocations = len(self.locations)
         orderList = list(range(numberOfLocations))
 
@@ -235,9 +234,10 @@ class map:
         return spacedLocations
 
     def displayMap(self):
+        spacedLocations = self.getSpacedLocations(self.map)
         tile = '|{}|'
         for i in range(self.rowSize):
-            print(tile.format(self.spacedLocations[i][0][1]), tile.format(self.spacedLocations[i][1][1]), tile.format(self.spacedLocations[i][2][1]))
+            print(tile.format(spacedLocations[i][0]), tile.format(spacedLocations[i][1]), tile.format(spacedLocations[i][2]))
 
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
