@@ -10,30 +10,48 @@ from random import shuffle, randint
 loc1 = ('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but the blue '
         'expanse of the ocean. You contemplate how you got here, and how you are going to get home.')
 
+loc1Short = 'Sandy Beach'
+
 loc2 = ('a dense rainforest. The sound of creatures in the bush is overwhelming, the smell is tropical. '
         'You are afraid, a predator could appear at any time. You think about what would happen if you did '
         'not return home.')
 
+loc2Short = 'Dense Rainforest'
+
 loc3 = ('an open clearing. On the ground infront of you there is a pile of strange stones. You are not sure what '
         'they are for. You wonder if there were once people here, and if so, where are they now?')
+
+loc3Short = 'Open Clearing'
 
 loc4 = ('a roaring waterfall. The white wash rolls from the top of the collosal stones, plunging into a pool of dark '
         'water. You wonder if there is anything down there, or maybe there is a secret passage behind the falls. '
         'You attempt to find the passage, but your luck comes up dry.')
 
+loc4Short = 'Roaring Waterfall'
+
 loc5 = ('a strange cave front. There are remnants of exploration here, makeshift torches and tools. You decide that '
         'it is likely not sensible to go into the cave without proper protection. You guess that people have before '
         'you; and it has not ended well.')
+
+loc5Short = 'Strange Cave Front'
 
 loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is a rusting hull of a small sailboat '
         'which is somehow still tied to the jetty. You wonder whether this was once the only connection this '
         'island had to the outside world.')
 
+loc6Short = 'Decrepit Marine Dock'
+
 loc7 = ('a')
+
+loc7Short = 'a'
 
 loc8 = ('b')
 
+loc8Short = 'b'
+
 loc9 = ('c')
+
+loc9Short = 'c'
 
 # variable definitions, these are things which are used often like message strings etc... or things which would make
 # code look ugly if used often in their normal form
@@ -47,12 +65,17 @@ copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries ca
 helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n\t' + 'north, south,' +
                ' east, west' + '\n\t' + 'go, move or travel + a direction' + '\n\t' + 'quit, exit, leave, end'
                + '\n' + 'or this help command, but you figured that one out, go you!')
-mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
+
+# location set definition
+mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9]
+shortLocations = [loc1Short, loc2Short, loc3Short, loc4Short, loc5Short, loc6Short, loc7Short, loc8Short, loc9Short]
+# command set definitions
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
 southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
 westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
+mapCommands = ['m', 'map', 'world', 'show map', 'view world']
 scoreCommands = ['score', 'points', 'total']
 yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
 noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
@@ -141,22 +164,26 @@ class map:
         self.rowSize = rowSize
         self.colSize = colSize
         self.locations = locations
+        self.shortLocations = shortLocations
         # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
         numberOfLocations = len(self.locations)
         orderList = list(range(numberOfLocations))
+
         # the program uses the shuffle command from the random library to determine the positions of the six special
         # locations in the map
         shuffle(orderList)
+
         # this for loop places the six shuffled locations in six random positions on the map
         for i in orderList:
             randRow, randCol = self.randomRowCol()
             placed = False
+
             # while loop with a nested if statement which ensures each of the six locations is placed in a distinct
             # location and that two locations are not placed at the same coordinate
             while not placed:
                 if self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i], False]
+                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False]
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -168,7 +195,7 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'Flag']
+                    self.map[i][j] = ['There is nothing here.', 'Nothing here', 'Flag']
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -193,12 +220,38 @@ class map:
         elif self.getVisited(player) is True:
             print('You have already discovered this location!')
 
+    def getSpacedLocations(self, map):
+        spacedLocations = [[None for cols in range(self.colSize)] for rows in range(self.rowSize)]
+        maxLen = self.getMaxLen(self.shortLocations)
+        for i in range(self.rowSize):
+            for j in range(self.colSize):
+                if len(map[i][j][1]) == maxLen:
+                    whitespace = ''
+                else:
+                    whitespace = (maxLen - len(map[i][j][1])) * ' '
+                spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
+        return spacedLocations
+
+    def displayMap(self):
+        spacedLocations = self.getSpacedLocations(self.map)
+        tile = '|{}|'
+        for i in range(self.rowSize):
+            print(tile.format(spacedLocations[i][0]), tile.format(spacedLocations[i][1]), tile.format(spacedLocations[i][2]))
+
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
         return randRow, randCol
 
     def getSizes(self):
         return self.colSize, self.rowSize
+
+    def getMaxLen(self, list):
+        maxLen = 0
+        for i in range(0, len(list)):
+            currLen = len(list[i])
+            if currLen > maxLen:
+                maxLen = currLen
+        return maxLen
 
     def getLocation(self, player):
         return self.map[player.rowLocation][player.colLocation][0]
@@ -247,6 +300,8 @@ class game:
             player.movePlayer('west', map)
         elif command.lower() in helpCommands:
             self.displayHelp()
+        elif command.lower() in mapCommands:
+            map.displayMap()
         elif command.lower() in scoreCommands:
             player.displayScore()
         elif command.lower() in quitCommands:
