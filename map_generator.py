@@ -4,7 +4,6 @@
 from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
-# from tabulate import tabulate
 
 # location definitions, these are the places the player can visit
 
