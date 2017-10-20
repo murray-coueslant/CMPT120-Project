@@ -62,13 +62,14 @@ ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
 ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
-helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n\t' + 'north, south,' +
-               ' east, west' + '\n\t' + 'go, move or travel + a direction' + '\n\t' + 'quit, exit, leave, end'
-               + '\n' + 'or this help command, but you figured that one out, go you!')
+helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south,' +
+               ' east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world'
+               + '\nor this help command, but you figured that one out, go you!')
 
 # location set definition
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9]
 shortLocations = [loc1Short, loc2Short, loc3Short, loc4Short, loc5Short, loc6Short, loc7Short, loc8Short, loc9Short]
+
 # command set definitions
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
@@ -101,7 +102,7 @@ class Player:
         if direction.lower() == 'north':
             self.rowLocation -= 1
             if self.rowLocation < 0:
-                game.displayError(2,self)
+                game.displayError(2, self)
                 self.rowLocation += 1
             else:
                 map.visitLocation(self)
@@ -220,6 +221,8 @@ class map:
         elif self.getVisited(player) is True:
             print('You have already discovered this location!')
 
+    # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
+    # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
     def getSpacedLocations(self, map):
         spacedLocations = [[None for cols in range(self.colSize)] for rows in range(self.rowSize)]
         maxLen = self.getMaxLen(self.shortLocations)
@@ -232,12 +235,14 @@ class map:
                 spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
         return spacedLocations, maxLen
 
+    # prints a single row of the game map, along with the correct separators for the map layout
     def printRow(self, row):
         output = '|'
         for val in row:
             output += str(val) + '|'
         print(output)
 
+    # this method is used to print a line separator for the map, similar to above it prints a single row in the output
     def printSeparator(self, length, row):
         output = '+'
         dashLength = '-' * length
@@ -245,6 +250,8 @@ class map:
             output += dashLength + '+'
         print(output)
 
+    # the main map display method, it fetches the maximum length of an item in the shortened locations list as well as
+    # fetching that list itself. it then uses these things to print the entire map using other functions
     def displayMap(self):
         spacedLocations, maxLen = self.getSpacedLocations(self.map)
         self.printSeparator(maxLen, spacedLocations[0])
@@ -252,13 +259,8 @@ class map:
             self.printRow(row)
             self.printSeparator(maxLen, row)
 
-    def randomRowCol(self):
-        randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
-        return randRow, randCol
-
-    def getSizes(self):
-        return self.colSize, self.rowSize
-
+    # this method uses a findmax algorithm to get the longest element in the shortLocations list in this case. this max
+    # value is used to append the appropriate amount of whitespace to the rest of the location elements
     def getMaxLen(self, list):
         maxLen = 0
         for i in range(0, len(list)):
@@ -266,6 +268,14 @@ class map:
             if currLen > maxLen:
                 maxLen = currLen
         return maxLen
+
+    # returns a random row and column for use when it is required
+    def randomRowCol(self):
+        randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
+        return randRow, randCol
+
+    def getSizes(self):
+        return self.colSize, self.rowSize
 
     def getLocation(self, player):
         return self.map[player.rowLocation][player.colLocation][0]
@@ -365,8 +375,9 @@ def displayTitle():
 def startGame():
     displayTitle()
     input(introduction)
-    character = Player(input('Enter the name of your character: '), int(gameMap.rowSize / 2),
-                       int(gameMap.colSize / 2))
+    randomRow, randomColumn = gameMap.randomRowCol()
+    character = Player(input('Enter the name of your character: '), randomRow,
+                       randomColumn)
     game.gameLoop(character, gameMap)
 
 
