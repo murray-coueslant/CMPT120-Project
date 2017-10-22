@@ -149,7 +149,7 @@ class Player:
             print(self.name, 'is currently at', map.getLocation(self))
 
     def checkMoves(self):
-        if self.moves > self.maxMoves:
+        if self.moves >= self.maxMoves:
             print('You have run out of moves, try again!')
             game.endGame(2)
         else:
