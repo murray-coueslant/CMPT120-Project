@@ -58,13 +58,14 @@ loc9Short = 'c'
 
 introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
                 'it is your task to explore your surroundings. Press enter to begin.')
-ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
-ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
+ending1 = '\nCongratulations, you have explored the whole island!\n'
+ending2 = '\nUnfortunately, you have run out of moves!\n'
+ending3 = 'I hope you enjoyed playing this game. See you soon!\n'
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
-                    'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
-helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south,' +
-               ' east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world'
-               + '\nor this help command, but you figured that one out, go you!')
+                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
+helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
+               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world\n\t'
+               'points, score or total\nor this help command, but you figured that one out, go you!')
 
 # location set definition
 mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9]
@@ -88,11 +89,13 @@ quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, rowLocation, colLocation, score=0):
+    def __init__(self, name, rowLocation, colLocation, map, score=0):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
         self.colLocation = colLocation
+        self.moves = 0
+        self.maxMoves = map.rowSize * map.colSize
 
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
@@ -106,6 +109,7 @@ class Player:
                 self.rowLocation += 1
             else:
                 map.visitLocation(self)
+                self.increaseMoves()
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > (map.rowSize - 1):
@@ -113,6 +117,7 @@ class Player:
                 self.rowLocation -= 1
             else:
                 map.visitLocation(self)
+                self.increaseMoves()
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > (map.colSize - 1):
@@ -120,6 +125,7 @@ class Player:
                 self.colLocation -= 1
             else:
                 map.visitLocation(self)
+                self.increaseMoves()
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
@@ -127,6 +133,7 @@ class Player:
                 self.colLocation += 1
             else:
                 map.visitLocation(self)
+                self.increaseMoves()
         else:
             game.displayError(1, self)
 
@@ -141,6 +148,13 @@ class Player:
         else:
             print(self.name, 'is currently at', map.getLocation(self))
 
+    def checkMoves(self):
+        if self.moves > self.maxMoves:
+            print('You have run out of moves, try again!')
+            game.endGame(2)
+        else:
+            print('You have', self.maxMoves-self.moves, 'moves remaining, use them wisely!')
+
     def getXPos(self):
         return self.colLocation
 
@@ -152,6 +166,9 @@ class Player:
 
     def increaseScore(self):
         self.score += 5
+
+    def increaseMoves(self):
+        self.moves += 1
 
     def displayScore(self):
         print(self.getName()+',', 'your score is:', self.getScore())
@@ -353,17 +370,22 @@ class game:
                         endFlag = True
                         print('Enter a quit command to leave the game once you are done exploring!')
                     elif decision.lower() in noCommands:
-                        self.endGame()
+                        self.endGame(1)
+            player.checkMoves()
 
     @staticmethod
-    def endGame():
-        print(ending1 + copyrightMessage + ending2)
-        quit()
+    def endGame(endingNo):
+        if endingNo == 1:
+            print(ending1 + copyrightMessage + ending3)
+            quit()
+        elif endingNo == 2:
+            print(ending2 + copyrightMessage + ending3)
+            quit()
 
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(5, 5, mapLocations, shortLocations)
+gameMap = map(3, 3, mapLocations, shortLocations)
 
 
 # title display routine
@@ -377,7 +399,7 @@ def startGame():
     input(introduction)
     randomRow, randomColumn = gameMap.randomRowCol()
     character = Player(input('Enter the name of your character: '), randomRow,
-                       randomColumn)
+                       randomColumn, gameMap)
     game.gameLoop(character, gameMap)
 
 
