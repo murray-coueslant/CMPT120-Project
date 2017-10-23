@@ -41,17 +41,22 @@ loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is
 
 loc6Short = 'Decrepit Marine Dock'
 
-loc7 = ('a')
+loc7 = ('an abandoned hut. The side of the hut has strange images painted on it in red paint, and there are no windows'
+        'on any side. The door sits ajar, you pry it open to reveal some more bizarre paintings on the wall as well as'
+        'hundreds of papers on the floor. You decide not to enter any farther into the structure for fear of crazies.')
 
-loc7Short = 'a'
+loc7Short = 'Abandoned Hut'
 
-loc8 = ('b')
+loc8 = ('a little creek. The water rushes by and you see some small fish glimmering in the sunlight. You dip your hands'
+        'into the water and take a drink. The water is cold and fresh, you fill your vessel from the creek and carry'
+        'on ahead.')
 
-loc8Short = 'b'
+loc8Short = 'Little Creek'
 
-loc9 = ('c')
+loc9 = ('a fallen tree. The collosal trunk is hollow after all of the time spent laying on the ground. There are '
+        'clearly animals who call this trunk their home. You decide to move on, you\'d rather not meet any of them.')
 
-loc9Short = 'c'
+loc9Short = 'Fallen Tree'
 
 # variable definitions, these are things which are used often like message strings etc... or things which would make
 # code look ugly if used often in their normal form
@@ -385,7 +390,7 @@ class game:
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(3, 3, mapLocations, shortLocations)
+gameMap = map(4, 4, mapLocations, shortLocations)
 
 
 # title display routine
