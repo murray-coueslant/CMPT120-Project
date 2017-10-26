@@ -18,7 +18,7 @@ loc2 = ('a dense rainforest. The sound of creatures in the bush is overwhelming,
 
 loc2Short = 'Dense Rainforest'
 
-loc3 = ('an open clearing. On the ground infront of you there is a pile of strange stones. You are not sure what '
+loc3 = ('an open clearing. On the ground in front of you there is a pile of strange stones. You are not sure what '
         'they are for. You wonder if there were once people here, and if so, where are they now?')
 
 loc3Short = 'Open Clearing'
@@ -153,6 +153,7 @@ class Player:
         else:
             print(self.name, 'is currently at', map.getLocation(self))
 
+    # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
         if self.moves >= self.maxMoves:
             print('You have run out of moves, try again!')
@@ -320,7 +321,7 @@ class game:
     @staticmethod
     def displayError(messageNo, player):
         if messageNo == 1:
-            message = 'Incorrect direction command entered, please enter another,', player.name
+            message = 'Incorrect direction command entered, please enter another, ' + player.name + '.'
         elif messageNo == 2:
             message = 'Collision, you cannot move this way. Choose another direction, ' + player.name + '.'
         elif messageNo == 3:
@@ -360,6 +361,8 @@ class game:
             self.getCommand(player, input('Enter new command: '), map)
 
     # this method is the main game loop which is called at the start of the game and runs until the end of the process
+    # it handles getting the command from the user, checking to see if the player has visited all of the locations as
+    # well as checking the amount of moves the player has completed
     def gameLoop(self, player, gameMap):
         player.getLocation(gameMap)
         gameMap.visitLocation(player)
