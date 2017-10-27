@@ -100,7 +100,7 @@ class Player:
         self.rowLocation = rowLocation
         self.colLocation = colLocation
         self.moves = 0
-        self.maxMoves = map.rowSize * map.colSize
+        self.maxMoves = 0
 
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
@@ -191,8 +191,7 @@ class map:
         self.shortLocations = shortLocations
         # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
-        numberOfLocations = len(self.locations)
-        orderList = list(range(numberOfLocations))
+        orderList = list(range(len(self.locations)))
 
         # the program uses the shuffle command from the random library to determine the positions of the six special
         # locations in the map
@@ -334,6 +333,14 @@ class game:
     def displayHelp():
         print(helpMessage)
 
+    def setDifficulty(self, difficulty, player, map):
+        if difficulty.lower() == 'easy':
+            player.maxMoves = 5 * (map.colSize * map.rowSize)
+        elif difficulty.lower() == 'medium':
+            player.maxMoves = 3 * (map.colSize * map.rowSize)
+        elif difficulty.lower() == 'hard':
+            player.maxMoves = 2 * (map.colSize * map.rowSize)
+
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
     # the command entered
     def getCommand(self, player, command, map):
@@ -408,6 +415,7 @@ def startGame():
     randomRow, randomColumn = gameMap.randomRowCol()
     character = Player(input('Enter the name of your character: '), randomRow,
                        randomColumn, gameMap)
+    game.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
     game.gameLoop(character, gameMap)
 
 
