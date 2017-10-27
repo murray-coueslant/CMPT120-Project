@@ -333,13 +333,20 @@ class game:
     def displayHelp():
         print(helpMessage)
 
+    # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
         if difficulty.lower() == 'easy':
             player.maxMoves = 5 * (map.colSize * map.rowSize)
+            return
         elif difficulty.lower() == 'medium':
             player.maxMoves = 3 * (map.colSize * map.rowSize)
+            return
         elif difficulty.lower() == 'hard':
             player.maxMoves = 2 * (map.colSize * map.rowSize)
+            return
+        else:
+            print('Incorrect difficulty entered, try again.')
+            self.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), player, map)
 
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
     # the command entered
