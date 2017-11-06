@@ -18,8 +18,9 @@ ending4 = '\nSuccessfully quitting game, thank you for playing.\n'
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.\n')
 helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
-               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world\n\t'
-               'points, score or total\nor this help command, but you figured that one out, go you!')
+               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world '
+               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n'
+               'or this help command, but you figured that one out, go you!')
 
 # location set definition
 mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
@@ -385,7 +386,7 @@ class game:
         while 1:
             locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
             if locationFlag == 'long':
-                player.getLongLocation(gameMap)
+                pass
             else:
                 player.getLocation(gameMap)
             count = gameMap.checkVisited()
