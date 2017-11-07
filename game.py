@@ -13,8 +13,9 @@ introduction = ('Welcome to a text adventure game. You are a lonely wanderer who
                 'it is your task to explore your surroundings. Press enter to begin.')
 ending1 = '\nCongratulations, you have explored the whole island!\n'
 ending2 = '\nUnfortunately, you have run out of moves!\n'
-ending3 = 'I hope you enjoyed playing this game. See you soon!\n'
-ending4 = '\nSuccessfully quitting game, thank you for playing.\n'
+ending3 = '\nYou discovered a special ending, congratulations!\n'
+ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
+ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.\n')
 helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
@@ -81,6 +82,7 @@ lookCommands = ['look', 'look around', 'view', 'explore']
 searchCommands = ['search', 'search area', 'search location', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possesions']
 takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
+specialCommands = ['climb', 'scale', 'enter', 'spelunk']
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
@@ -363,7 +365,12 @@ class game:
         print(helpMessage)
 
     def checkSpecialLocation(self, player, map):
-        pass
+        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall':
+            if 'rope' in player.inventory:
+                print('You have something in your possession which might help you here. Try climbing the falls.')
+        if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
+            if 'armour' in player.inventory and 'sword' in player.inventory:
+                print('You are well equipped for exploring, try entering the cave.')
 
     # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
@@ -411,6 +418,8 @@ class game:
             player.getInventory()
         elif command.lower() in takeCommands:
             player.takeItem(map)
+        elif command.lower() in specialCommands:
+            game.specialEnding(player, map)
         elif command.lower() == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
@@ -427,7 +436,7 @@ class game:
         endFlag = False
         while 1:
             locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
-            game.checkSpecialLocation()
+            game.checkSpecialLocation(player, gameMap)
             if locationFlag == 'long':
                 pass
             else:
@@ -443,13 +452,27 @@ class game:
                         self.endGame(1)
             player.checkMoves()
 
+    def specialEnding(self, player, map):
+        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' in player.inventory:
+            print('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!')
+            self.endGame(3)
+        if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in player.inventory \
+                and 'sword' in player.inventory:
+            print('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
+                  'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
+                  'you. You are saved!')
+            self.endGame(3)
+
     @staticmethod
     def endGame(endingNo):
         if endingNo == 1:
-            print(ending1 + copyrightMessage + ending3)
+            print(ending1 + copyrightMessage + ending4)
             quit()
         elif endingNo == 2:
-            print(ending2 + copyrightMessage + ending3)
+            print(ending2 + copyrightMessage + ending4)
+            quit()
+        elif endingNo == 3:
+            print(ending3 + copyrightMessage + ending4)
             quit()
 
 
