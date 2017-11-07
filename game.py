@@ -371,6 +371,9 @@ class game:
         if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
             if 'armour' in player.inventory and 'sword' in player.inventory:
                 print('You are well equipped for exploring, try entering the cave.')
+        if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+            if 'armour' not in player.inventory:
+                self.specialEnding(player, map)
 
     # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
@@ -462,6 +465,10 @@ class game:
                   'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                   'you. You are saved!')
             self.endGame(3)
+        if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+            print('You are set upon by a large beast which appeared from the huge tree trunk. You do not make it out '
+                  'alive.')
+            self.endGame(3)
 
     @staticmethod
     def endGame(endingNo):
@@ -491,6 +498,8 @@ def startGame():
     displayTitle()
     input(introduction)
     randomRow, randomColumn = gameMap.randomRowCol()
+    while gameMap.map[randomRow][randomColumn][1] == 'Fallen Tree':
+        randomRow, randomColumn = gameMap.randomRowCol()
     character = Player(input('Enter the name of your character: '), randomRow,
                        randomColumn, gameMap)
     game.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
