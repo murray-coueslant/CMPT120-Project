@@ -61,6 +61,10 @@ shortLocations = ['Sandy Beach',
                   'Little Creek',
                   'Fallen Tree',
                   'Huge Totem']
+items = ["map",
+         "rope",
+         "armour",
+         "sword"]
 
 # command set definitions
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
@@ -75,6 +79,8 @@ noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 lookCommands = ['look', 'look around', 'view', 'explore']
 searchCommands = ['search', 'search area', 'search location', 'examine']
+inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possesions']
+takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
@@ -89,7 +95,7 @@ class Player:
         self.colLocation = colLocation
         self.moves = 0
         self.maxMoves = 0
-
+        self.inventory = []
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
     # once decided it modifies the current location of the player in the correct way for the desired direction
@@ -133,6 +139,11 @@ class Player:
     def getName(self):
         return self.name
 
+    def getInventory(self):
+        print("In your inventory you have:")
+        for i in self.inventory:
+            print("\t"+str(i))
+
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
     def getLocation(self, map):
@@ -146,6 +157,21 @@ class Player:
             print(self.name, 'finds nothing, you should keep exploring.')
         else:
             print(self.name, 'is currently at', map.getLongLocation(self))
+
+    def itemSearch(self, map):
+        if map.map[self.rowLocation][self.colLocation][3] is not None:
+            item = map.map[self.rowLocation][self.colLocation][3]
+            print("You have found:", item)
+        else:
+            print("No items here!")
+
+    def takeItem(self, map):
+        if map.map[self.rowLocation][self.colLocation][3] is not None:
+            item = map.map[self.rowLocation][self.colLocation][3]
+            self.inventory.append(item)
+            print("You have picked up:", item)
+        else:
+            print("Nothing to take!")
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -178,29 +204,35 @@ class Player:
 
 
 class map:
-    def __init__(self, rowSize, colSize, locations, shortLocations):
+    def __init__(self, rowSize, colSize, locations, shortLocations, items):
         self.rowSize = rowSize
         self.colSize = colSize
         self.locations = locations
         self.shortLocations = shortLocations
+        self.items = items
         # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
         orderList = list(range(len(self.locations)))
-
-        # the program uses the shuffle command from the random library to determine the positions of the six special
+        itemList = list(range(len(self.items)))
+        # the program uses the shuffle command from the random library to determine the positions of the 10 special
         # locations in the map
         shuffle(orderList)
-
-        # this for loop places the six shuffled locations in six random positions on the map
+        shuffle(itemList)
+        itemCounter = 0
+        # this for loop places the 10 shuffled locations in 10 random positions on the map
         for i in orderList:
             randRow, randCol = self.randomRowCol()
             placed = False
-
             # while loop with a nested if statement which ensures each of the ten locations is placed in a distinct
             # location and that two locations are not placed at the same coordinate
             while not placed:
-                if self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False]
+                if self.map[randRow][randCol] is None and itemCounter < 4:
+                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
+                                                  items[itemList[itemCounter]]]
+                    itemCounter += 1
+                    placed = True
+                elif self.map[randRow][randCol] is None:
+                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None]
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -212,7 +244,7 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag']
+                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag', None]
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -330,6 +362,9 @@ class game:
     def displayHelp():
         print(helpMessage)
 
+    def checkSpecialLocation(self, player, map):
+        pass
+
     # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
         if difficulty.lower() == 'easy':
@@ -359,7 +394,10 @@ class game:
         elif command.lower() in helpCommands:
             self.displayHelp()
         elif command.lower() in mapCommands:
-            map.displayMap()
+            if 'map' in player.inventory:
+                map.displayMap()
+            else:
+                print('You cannot look at a map you do not have!')
         elif command.lower() in scoreCommands:
             player.displayScore()
         elif command.lower() in quitCommands:
@@ -368,7 +406,11 @@ class game:
             player.getLongLocation(map)
             return 'long'
         elif command.lower() in searchCommands:
-            pass
+            player.itemSearch(map)
+        elif command.lower() in inventoryCommands:
+            player.getInventory()
+        elif command.lower() in takeCommands:
+            player.takeItem(map)
         elif command.lower() == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
@@ -385,6 +427,7 @@ class game:
         endFlag = False
         while 1:
             locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
+            game.checkSpecialLocation()
             if locationFlag == 'long':
                 pass
             else:
@@ -412,7 +455,7 @@ class game:
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(5, 4, mapLocations, shortLocations)
+gameMap = map(5, 4, mapLocations, shortLocations, items)
 
 
 # title display routine
