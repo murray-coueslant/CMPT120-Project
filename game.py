@@ -229,10 +229,14 @@ class map:
             # location and that two locations are not placed at the same coordinate
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
-                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
-                                                  items[itemList[itemCounter]]]
-                    itemCounter += 1
-                    placed = True
+                    if self.shortLocations[i] == 'Fallen Tree':
+                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None]
+                        placed = True
+                    else:
+                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
+                                                      items[itemList[itemCounter]]]
+                        itemCounter += 1
+                        placed = True
                 elif self.map[randRow][randCol] is None:
                     self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None]
                     placed = True
