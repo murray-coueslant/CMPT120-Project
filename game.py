@@ -62,10 +62,10 @@ shortLocations = ['Sandy Beach',
                   'Little Creek',
                   'Fallen Tree',
                   'Huge Totem']
-items = ["map",
-         "rope",
-         "armour",
-         "sword"]
+items = ['map',
+         'rope',
+         'armour',
+         'sword']
 
 # command set definitions
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
@@ -142,9 +142,9 @@ class Player:
         return self.name
 
     def getInventory(self):
-        print("In your inventory you have:")
+        print('In your inventory you have:')
         for i in self.inventory:
-            print("\t"+str(i))
+            print('\t'+str(i))
 
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
@@ -163,17 +163,21 @@ class Player:
     def itemSearch(self, map):
         if map.map[self.rowLocation][self.colLocation][3] is not None:
             item = map.map[self.rowLocation][self.colLocation][3]
-            print("You have found:", item)
+            print('You have found:', item[0])
         else:
-            print("No items here!")
+            print('No items here!')
 
     def takeItem(self, map):
         if map.map[self.rowLocation][self.colLocation][3] is not None:
             item = map.map[self.rowLocation][self.colLocation][3]
-            self.inventory.append(item)
-            print("You have picked up:", item)
+            if item[1] is False:
+                self.inventory.append(item[0])
+                print('You have picked up:', item[0])
+                item[1] = True
+            else:
+                print("You have already picked up the", item[0])
         else:
-            print("Nothing to take!")
+            print('Nothing to take!')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -230,11 +234,11 @@ class map:
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
                     if self.shortLocations[i] == 'Fallen Tree':
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None]
+                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, [None, True]]
                         placed = True
                     else:
                         self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
-                                                      items[itemList[itemCounter]]]
+                                                      [items[itemList[itemCounter]], False]]
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
@@ -415,7 +419,7 @@ class game:
         elif command.lower() in scoreCommands:
             player.displayScore()
         elif command.lower() in quitCommands:
-            self.endGame()
+            self.endGame(4)
         elif command.lower() in lookCommands:
             player.getLongLocation(map)
             return 'long'
@@ -470,8 +474,8 @@ class game:
                   'you. You are saved!')
             self.endGame(3)
         if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
-            print('You are set upon by a large beast which appeared from the huge tree trunk. You do not make it out '
-                  'alive.')
+            print('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
+                  'out alive.')
             self.endGame(3)
 
     @staticmethod
@@ -484,6 +488,9 @@ class game:
             quit()
         elif endingNo == 3:
             print(ending3 + copyrightMessage + ending4)
+            quit()
+        elif endingNo == 4:
+            print(ending5 + copyrightMessage)
             quit()
 
 
