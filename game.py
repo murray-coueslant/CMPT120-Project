@@ -172,11 +172,16 @@ class Player:
 
     # itemSearch looks in the player's current position to see if there is a retrievable item for the player there
     def itemSearch(self, map):
-        if map.map[self.rowLocation][self.colLocation][3] is not None:
-            item = map.map[self.rowLocation][self.colLocation][3]
-            print('You have found:', item[0])
+        if map.map[self.rowLocation][self.colLocation][4] is False:
+            if map.map[self.rowLocation][self.colLocation][3] is not None:
+                item = map.map[self.rowLocation][self.colLocation][3]
+                print('You have found:', item[0])
+                map.map[self.rowLocation][self.colLocation][4] = True
+            else:
+                print('No items here!')
+                map.map[self.rowLocation][self.colLocation][4] = True
         else:
-            print('No items here!')
+            print('You have already searched here!')
 
     # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
     # it will inform them that it has already been taken
@@ -247,15 +252,16 @@ class map:
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
                     if self.shortLocations[i] == 'Fallen Tree':
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, [None, True]]
+                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, [None, True],
+                                                      False]
                         placed = True
                     else:
                         self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
-                                                      [items[itemList[itemCounter]], False]]
+                                                      [items[itemList[itemCounter]], False], False]
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None]
+                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None, False]
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -267,7 +273,7 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag', None]
+                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag', None, False]
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
