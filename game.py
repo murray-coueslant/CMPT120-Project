@@ -62,6 +62,8 @@ shortLocations = ['Sandy Beach',
                   'Little Creek',
                   'Fallen Tree',
                   'Huge Totem']
+
+# item set definition
 items = ['map',
          'rope',
          'armour',
@@ -83,6 +85,9 @@ searchCommands = ['search', 'search area', 'search location', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possesions']
 takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
 specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+easyWords = ['easy', 'e', 'simple']
+mediumWords = ['medium', 'm', 'moderate']
+hardWords = ['hard', 'h', 'complex']
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
@@ -141,10 +146,14 @@ class Player:
     def getName(self):
         return self.name
 
+    # outputs a formatted list of the items which the player has in their inventory currently
     def getInventory(self):
-        print('In your inventory you have:')
-        for i in self.inventory:
-            print('\t'+str(i))
+        if len(self.inventory) == 0:
+            print('You\'re not carrying anything!')
+        else:
+            print('In your inventory you have:')
+            for i in self.inventory:
+                print('-' + '\t'+str(i))
 
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
@@ -154,12 +163,14 @@ class Player:
         else:
             print(self.name, 'is currently at', map.getLocation(self))
 
+    # get long location outputs the long description of a location to the player
     def getLongLocation(self, map):
         if map.getLocation(self) == 'There is nothing here.':
             print(self.name, 'finds nothing, you should keep exploring.')
         else:
             print(self.name, 'is currently at', map.getLongLocation(self))
 
+    # itemSearch looks in the player's current position to see if there is a retrievable item for the player there
     def itemSearch(self, map):
         if map.map[self.rowLocation][self.colLocation][3] is not None:
             item = map.map[self.rowLocation][self.colLocation][3]
@@ -167,6 +178,8 @@ class Player:
         else:
             print('No items here!')
 
+    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
+    # it will inform them that it has already been taken
     def takeItem(self, map):
         if map.map[self.rowLocation][self.colLocation][3] is not None:
             item = map.map[self.rowLocation][self.colLocation][3]
@@ -372,6 +385,9 @@ class game:
     def displayHelp():
         print(helpMessage)
 
+    # checkSpecialLocation looks at the player's current location and checks whether it is one of the locations which
+    # has a special ending. If the correct items for the ending are in the player's inventory, a message is shown, if
+    # not nothing is shown to the player until they have the correct items
     def checkSpecialLocation(self, player, map):
         if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall':
             if 'rope' in player.inventory:
@@ -385,13 +401,13 @@ class game:
 
     # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
-        if difficulty.lower() == 'easy':
+        if difficulty.lower() in easyWords:
             player.maxMoves = 5 * (map.colSize * map.rowSize)
             return
-        elif difficulty.lower() == 'medium':
+        elif difficulty.lower() in mediumWords:
             player.maxMoves = 3 * (map.colSize * map.rowSize)
             return
-        elif difficulty.lower() == 'hard':
+        elif difficulty.lower() in hardWords:
             player.maxMoves = 2 * (map.colSize * map.rowSize)
             return
         else:
@@ -400,6 +416,8 @@ class game:
 
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
     # the command entered
+    # TODO: this whole function is super long and convoluted, i'm sure there is an easier way to parse commands from the
+    # TODO: user and condense this whole code
     def getCommand(self, player, command, map):
         if command.lower() in northCommands:
             player.movePlayer('north', map)
@@ -463,6 +481,9 @@ class game:
                         self.endGame(1)
             player.checkMoves()
 
+    # the specialEnding method displays the result of the ending which the player has accessed. It checks the conditions
+    # the same as the checkSpecialLocation method to ensure that they are met and then displays a special message and
+    # quits the game
     def specialEnding(self, player, map):
         if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' in player.inventory:
             print('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!')
