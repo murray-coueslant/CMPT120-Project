@@ -21,16 +21,9 @@ loc4 = ('a roaring waterfall. The white wash rolls from the top of the collosal 
         'water. You wonder if there is anything down there, or maybe there is a secret passage behind the falls. '
         'You attempt to find the passage, but your luck comes up dry.')
 
-<<<<<<< HEAD
 loc5 = ('a strange cave front. There are remnants of exploration here, makeshift torches and tools. You decide that '
         'it is likely not sensible to go into the cave without proper protection. You guess that people have before '
         'you; and it has not ended well.')
-=======
-loc4 = 'at the end of the tracks, what you find makes you step back a few paces. At your feet lies a glowing green ' \
-       'object. What is it? How did it get here? Suddenly, the glowing becomes more and more intense until you can ' \
-       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You ' \
-       'turn on your heels and run as fast as your legs can muster.'
->>>>>>> master
 
 loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is a rusting hull of a small sailboat '
         'which is somehow still tied to the jetty. You wonder whether this was once the only connection this '
@@ -69,7 +62,7 @@ quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 # controlling
 
 
-<<<<<<< HEAD
+
 class Player:
     # initialising the variables which store the essential data for the player object
     def __init__(self, name, rowLocation, colLocation, score=0):
@@ -143,12 +136,6 @@ class Player:
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
 
-=======
-# title display routine
-def displayTitle():
-    cprint(figlet_format('A Text Adventure!', font='big'),
-           'red', attrs=['bold'])
->>>>>>> master
 
 class map:
     def __init__(self, rowSize, colSize, locations):
