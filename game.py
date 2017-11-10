@@ -300,7 +300,7 @@ class map:
             player.displayScore()
             self.setVisited(player)
         elif self.getVisited(player) is True:
-            cprint('You have already discovered this location!', 'orange')
+            print('You have already discovered this location!')
 
     # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
     # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
@@ -321,7 +321,7 @@ class map:
         output = '|'
         for val in row:
             output += str(val) + '|'
-        cprint(output, 'brown')
+        print(output)
 
     # this method is used to print a line separator for the map, similar to above it prints a single row in the output
     def printSeparator(self, length, row):
@@ -329,7 +329,7 @@ class map:
         dashLength = '-' * length
         for val in row:
             output += dashLength + '+'
-        cprint(output, 'brown')
+        print(output)
 
     # the main map display method, it fetches the maximum length of an item in the shortened locations list as well as
     # fetching that list itself. it then uses these things to print the entire map using other functions
@@ -475,7 +475,7 @@ class game:
     # it handles getting the command from the user, checking to see if the player has visited all of the locations as
     # well as checking the amount of moves the player has completed
     def gameLoop(self, player, gameMap):
-        player.getLocation(gameMap)
+        player.getLongLocation(gameMap)
         gameMap.visitLocation(player)
         endFlag = False
         while 1:
@@ -484,7 +484,10 @@ class game:
             if locationFlag == 'long':
                 pass
             else:
-                player.getLocation(gameMap)
+                if gameMap.getVisited(player) is False:
+                    player.getLongLocation(gameMap)
+                else:
+                    player.getLocation(gameMap)
             count = gameMap.checkVisited()
             if count == gameMap.rowSize * gameMap.colSize:
                 while endFlag is False:
