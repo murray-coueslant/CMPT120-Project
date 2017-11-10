@@ -198,15 +198,15 @@ class Player:
                 else:
                     print("You have already picked up the", item[0])
             else:
-                print('Nothing to take!')
+                cprint('Nothing to take!', 'red')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
         if self.moves >= self.maxMoves:
-            print('You have run out of moves, try again!')
+            cprint('You have run out of moves, try again!', 'red')
             game.endGame(2)
         else:
-            print('You have', self.maxMoves-self.moves, 'moves remaining, use them wisely!')
+            cprint('You have ' + str(self.maxMoves-self.moves) + ' moves remaining, use them wisely!', 'blue')
 
     def getXPos(self):
         return self.colLocation
@@ -224,7 +224,7 @@ class Player:
         self.moves += 1
 
     def displayScore(self):
-        print(self.getName()+',', 'your score is:', self.getScore())
+        cprint((self.getName()+', ' + 'your score is: ' + str(self.getScore())), 'blue')
 
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
@@ -299,7 +299,7 @@ class map:
             player.displayScore()
             self.setVisited(player)
         elif self.getVisited(player) is True:
-            print('You have already discovered this location!')
+            cprint('You have already discovered this location!', 'orange')
 
     # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
     # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
@@ -320,7 +320,7 @@ class map:
         output = '|'
         for val in row:
             output += str(val) + '|'
-        print(output)
+        cprint(output, 'brown')
 
     # this method is used to print a line separator for the map, similar to above it prints a single row in the output
     def printSeparator(self, length, row):
@@ -328,7 +328,7 @@ class map:
         dashLength = '-' * length
         for val in row:
             output += dashLength + '+'
-        print(output)
+        cprint(output, 'brown')
 
     # the main map display method, it fetches the maximum length of an item in the shortened locations list as well as
     # fetching that list itself. it then uses these things to print the entire map using other functions
@@ -349,7 +349,7 @@ class map:
                 maxLen = currLen
         return maxLen
 
-    # returns a random row and column for use when it is required
+    # returns a random row and column within the bounds of the map for use when it is required
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
         return randRow, randCol
@@ -383,16 +383,16 @@ class game:
         if messageNo == 1:
             message = 'Incorrect direction command entered, please enter another, ' + player.name + '.'
         elif messageNo == 2:
-            message = 'Collision, you cannot move this way. Choose another direction, ' + player.name + '.'
+            message = 'You have reached the edge of the island! Choose another direction, ' + player.name + '.'
         elif messageNo == 3:
             message = 'Unrecognised command, please enter another, ' + player.name + '.'
         else:
             message = 'Unknown error.'
-        print(message)
+        cprint(message, 'red')
 
     @staticmethod
     def displayHelp():
-        print(helpMessage)
+        cprint(helpMessage, 'yellow')
 
     # checkSpecialLocation looks at the player's current location and checks whether it is one of the locations which
     # has a special ending. If the correct items for the ending are in the player's inventory, a message is shown, if
@@ -400,10 +400,15 @@ class game:
     def checkSpecialLocation(self, player, map):
         if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall':
             if 'rope' in player.inventory:
-                print('You have something in your possession which might help you here. Try climbing the falls.')
+                cprint('You have something in your possession which might help you here. Try climbing the falls.',
+                       'yellow')
+            else:
+                cprint('Perhaps if you had a rope or a safety net, you could climb these falls...', 'yellow')
         if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
             if 'armour' in player.inventory and 'sword' in player.inventory:
-                print('You are well equipped for exploring, try entering the cave.')
+                cprint('You are well equipped for exploring, try entering the cave.', 'yellow')
+            else:
+                cprint('Maybe you could enter the cave, if you had the right equipment...', 'yellow')
         if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
             if 'armour' not in player.inventory:
                 self.specialEnding(player, map)
@@ -498,11 +503,19 @@ class game:
             cprint('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!',
                    'green')
             self.endGame(3)
+        else:
+            cprint('You try to climb the falls with no rope, this was an obviously stupid idea. You fall to your death '
+                  'from 60 feet in the air.', 'red')
+            self.endGame(3)
         if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in player.inventory \
                 and 'sword' in player.inventory:
             cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
                   'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                   'you. You are saved!', 'green')
+            self.endGame(3)
+        else:
+            cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
+                  'succumb to a well hidden trap.', 'red')
             self.endGame(3)
         if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
@@ -512,16 +525,16 @@ class game:
     @staticmethod
     def endGame(endingNo):
         if endingNo == 1:
-            print(ending1 + copyrightMessage + ending4)
+            cprint(ending1 + copyrightMessage + ending4, 'blue')
             quit()
         elif endingNo == 2:
-            print(ending2 + copyrightMessage + ending4)
+            cprint(ending2 + copyrightMessage + ending4, 'blue')
             quit()
         elif endingNo == 3:
-            print(ending3 + copyrightMessage + ending4)
+            cprint(ending3 + copyrightMessage + ending4, 'blue')
             quit()
         elif endingNo == 4:
-            print(ending5 + copyrightMessage)
+            cprint(ending5 + copyrightMessage, 'blue')
             quit()
 
 
@@ -532,7 +545,7 @@ gameMap = map(5, 4, mapLocations, shortLocations, items)
 
 # title display routine
 def displayTitle():
-    cprint(figlet_format('A Huge Text Adventure!', font='big'), 'red', attrs=['bold'])
+    cprint(figlet_format('A Huge Text Adventure!', font='larry3d'), 'red', attrs=['bold'])
 
 
 # starting routine
