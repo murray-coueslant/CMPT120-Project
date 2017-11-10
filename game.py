@@ -495,17 +495,18 @@ class game:
     # quits the game
     def specialEnding(self, player, map):
         if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' in player.inventory:
-            print('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!')
+            cprint('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!',
+                   'green')
             self.endGame(3)
         if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in player.inventory \
                 and 'sword' in player.inventory:
-            print('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
+            cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
                   'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
-                  'you. You are saved!')
+                  'you. You are saved!', 'green')
             self.endGame(3)
         if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
-            print('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
-                  'out alive.')
+            cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
+                  'out alive.', 'red')
             self.endGame(3)
 
     @staticmethod
@@ -531,7 +532,7 @@ gameMap = map(5, 4, mapLocations, shortLocations, items)
 
 # title display routine
 def displayTitle():
-    cprint(figlet_format('A Text Adventure!', font='big'), 'white', attrs=['bold'])
+    cprint(figlet_format('A Huge Text Adventure!', font='big'), 'red', attrs=['bold'])
 
 
 # starting routine
