@@ -82,7 +82,7 @@ noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 lookCommands = ['look', 'look around', 'view', 'explore']
 searchCommands = ['search', 'search area', 'search location', 'examine']
-inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possesions']
+inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
 takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
 specialCommands = ['climb', 'scale', 'enter', 'spelunk']
 easyWords = ['easy', 'e', 'simple']
@@ -103,8 +103,9 @@ class Player:
         self.moves = 0
         self.maxMoves = 0
         self.inventory = []
+        self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
-    # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
+    # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
     # once decided it modifies the current location of the player in the correct way for the desired direction
 
     def movePlayer(self, direction, map):
@@ -237,7 +238,7 @@ class map:
         self.locations = locations
         self.shortLocations = shortLocations
         self.items = items
-        # defines a 2D array of a certain size which is defined when the class is instantiated
+        # defines a 2D array of an arbitrary size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
         orderList = list(range(len(self.locations)))
         itemList = list(range(len(self.items)))
