@@ -1,5 +1,5 @@
 # a more complex text adventure game, with a randomly generated map and player control
-# Written by: Murray Coueslant, Date: 2017/09/08
+# Written by: Murray Coueslant, Date: 2017/11/08
 
 from pyfiglet import figlet_format
 from termcolor import cprint
@@ -31,7 +31,7 @@ mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look
                  'not return home.'),
                 ('an open clearing. On the ground in front of you there is a pile of strange stones. You are not '
                  'sure what they are for. You wonder if there were once people here, and if so, where are they now?'),
-                ('a roaring waterfall. The white wash rolls from the top of the collosal stones, plunging into a '
+                ('a roaring waterfall. The white wash rolls from the top of the colossal stones, plunging into a '
                  'pool of dark water. You wonder if there is anything down there, or maybe there is a secret passage '
                  'behind the falls. You attempt to find the passage, but your luck comes up dry.'),
                 ('a strange cave front. There are remnants of exploration here, makeshift torches and tools. '
@@ -186,16 +186,19 @@ class Player:
     # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
     # it will inform them that it has already been taken
     def takeItem(self, map):
-        if map.map[self.rowLocation][self.colLocation][3] is not None:
-            item = map.map[self.rowLocation][self.colLocation][3]
-            if item[1] is False:
-                self.inventory.append(item[0])
-                print('You have picked up:', item[0])
-                item[1] = True
-            else:
-                print("You have already picked up the", item[0])
+        if map.map[self.rowLocation][self.colLocation][4] is False:
+            print('You can\'t take something you haven\'t looked for!')
         else:
-            print('Nothing to take!')
+            if map.map[self.rowLocation][self.colLocation][3] is not None:
+                item = map.map[self.rowLocation][self.colLocation][3]
+                if item[1] is False:
+                    self.inventory.append(item[0])
+                    print('You have picked up:', item[0])
+                    item[1] = True
+                else:
+                    print("You have already picked up the", item[0])
+            else:
+                print('Nothing to take!')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -336,7 +339,7 @@ class map:
             self.printRow(row)
             self.printSeparator(maxLen, row)
 
-    # this method uses a findmax algorithm to get the longest element in the shortLocations list in this case. this max
+    # this method uses a findMax algorithm to get the longest element in the shortLocations list in this case. this max
     # value is used to append the appropriate amount of whitespace to the rest of the location elements
     def getMaxLen(self, list):
         maxLen = 0
@@ -541,6 +544,7 @@ def startGame():
     character = Player(input('Enter the name of your character: '), randomRow,
                        randomColumn, gameMap)
     game.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
+    print('\nEnter the \'help\' command to see what you can do!\n')
     game.gameLoop(character, gameMap)
 
 
