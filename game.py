@@ -159,14 +159,14 @@ class Player:
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
     def getLocation(self, map):
-        if map.getLocation(self) == 'There is nothing here.':
+        if map.getLocation(self) == 'an empty place.':
             print(self.name, 'finds nothing, you should keep exploring.')
         else:
             print(self.name, 'is currently at', map.getLocation(self))
 
     # get long location outputs the long description of a location to the player
     def getLongLocation(self, map):
-        if map.getLocation(self) == 'There is nothing here.':
+        if map.getLocation(self) == 'an empty place.':
             print(self.name, 'finds nothing, you should keep exploring.')
         else:
             print(self.name, 'is currently at', map.getLongLocation(self))
@@ -281,8 +281,8 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.',
-                                      'X X X', 'Flag', None, False]
+                    self.map[i][j] = ['an empty place.',
+                                      'nowhere', 'Flag', None, False]
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
