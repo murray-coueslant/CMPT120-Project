@@ -154,7 +154,7 @@ class Player:
         else:
             print('In your inventory you have:')
             for i in self.inventory:
-                print('-' + '\t'+str(i))
+                print('-' + '\t' + str(i))
 
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
@@ -207,7 +207,8 @@ class Player:
             cprint('You have run out of moves, try again!', 'red')
             game.endGame(2)
         else:
-            cprint('You have ' + str(self.maxMoves-self.moves) + ' moves remaining, use them wisely!', 'blue')
+            cprint('You have ' + str(self.maxMoves - self.moves) +
+                   ' moves remaining, use them wisely!', 'blue')
 
     def getXPos(self):
         return self.colLocation
@@ -225,7 +226,8 @@ class Player:
         self.moves += 1
 
     def displayScore(self):
-        cprint((self.getName()+', ' + 'your score is: ' + str(self.getScore())), 'blue')
+        cprint((self.getName() + ', ' + 'your score is: ' +
+                str(self.getScore())), 'blue')
 
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
@@ -239,7 +241,8 @@ class map:
         self.shortLocations = shortLocations
         self.items = items
         # defines a 2D array of an arbitrary size which is defined when the class is instantiated
-        self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
+        self.map = [[None for cols in range(colSize)]
+                    for rows in range(rowSize)]
         orderList = list(range(len(self.locations)))
         itemList = list(range(len(self.items)))
         # the program uses the shuffle command from the random library to determine the positions of the 10 special
@@ -265,7 +268,8 @@ class map:
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, None, False]
+                    self.map[randRow][randCol] = [self.locations[i],
+                                                  self.shortLocations[i], False, None, False]
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -277,7 +281,8 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag', None, False]
+                    self.map[i][j] = ['There is nothing here.',
+                                      'X X X', 'Flag', None, False]
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -308,7 +313,8 @@ class map:
     # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
     # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
     def getSpacedLocations(self, map):
-        spacedLocations = [[None for cols in range(self.colSize)] for rows in range(self.rowSize)]
+        spacedLocations = [[None for cols in range(
+            self.colSize)] for rows in range(self.rowSize)]
         maxLen = self.getMaxLen(self.shortLocations)
         for i in range(self.rowSize):
             for j in range(self.colSize):
@@ -355,7 +361,8 @@ class map:
 
     # returns a random row and column within the bounds of the map for use when it is required
     def randomRowCol(self):
-        randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
+        randRow, randCol = randint(
+            0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
         return randRow, randCol
 
     def getSizes(self):
@@ -387,7 +394,8 @@ class game:
         if messageNo == 1:
             message = 'Incorrect direction command entered, please enter another, ' + player.name + '.'
         elif messageNo == 2:
-            message = 'You have reached the edge of the island! Choose another direction, ' + player.name + '.'
+            message = 'You have reached the edge of the island! Choose another direction, ' + \
+                player.name + '.'
         elif messageNo == 3:
             message = 'Unrecognised command, please enter another, ' + player.name + '.'
         else:
@@ -407,12 +415,15 @@ class game:
                 cprint('You have something in your possession which might help you here. Try climbing the falls.',
                        'yellow')
             else:
-                cprint('Perhaps if you had a rope or a safety net, you could climb these falls...', 'yellow')
+                cprint(
+                    'Perhaps if you had a rope or a safety net, you could climb these falls...', 'yellow')
         if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
             if 'armour' in player.inventory and 'sword' in player.inventory:
-                cprint('You are well equipped for exploring, try entering the cave.', 'yellow')
+                cprint(
+                    'You are well equipped for exploring, try entering the cave.', 'yellow')
             else:
-                cprint('Maybe you could enter the cave, if you had the right equipment...', 'yellow')
+                cprint(
+                    'Maybe you could enter the cave, if you had the right equipment...', 'yellow')
         if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
             if 'armour' not in player.inventory:
                 self.specialEnding(player, map)
@@ -430,7 +441,8 @@ class game:
             return
         else:
             print('Incorrect difficulty entered, try again.')
-            self.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), player, map)
+            self.setDifficulty(input(
+                'What difficulty would you like to play on? (Easy, Medium, Hard): '), player, map)
 
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
     # the command entered
@@ -485,22 +497,22 @@ class game:
         elif map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' not in \
                 player.inventory:
             cprint('You try to climb the falls with no rope, this was an obviously stupid idea. You fall to your death '
-                  'from 60 feet in the air.', 'red')
+                   'from 60 feet in the air.', 'red')
             self.endGame(3)
         elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in \
                 player.inventory and 'sword' in player.inventory:
             cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
-                  'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
-                  'you. You are saved!', 'green')
+                   'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
+                   'you. You are saved!', 'green')
             self.endGame(3)
         elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' not in \
                 player.inventory and 'sword' not in player.inventory:
             cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
-                  'succumb to a well hidden trap.', 'red')
+                   'succumb to a well hidden trap.', 'red')
             self.endGame(3)
         elif map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
-                  'out alive.', 'red')
+                   'out alive.', 'red')
             self.endGame(3)
 
     @staticmethod
@@ -525,17 +537,20 @@ class game:
         gameMap.visitLocation(player, gameMap)
         endFlag = False
         while 1:
-            locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
+            locationFlag = self.getCommand(player, input(
+                '\n' + 'What would you like to do?: '), gameMap)
             game.checkSpecialLocation(player, gameMap)
             if locationFlag == 'long':
                 pass
             count = gameMap.checkVisited()
             if count == gameMap.rowSize * gameMap.colSize:
                 while endFlag is False:
-                    decision = input('Would you like to keep exploring? (Y or N): ')
+                    decision = input(
+                        'Would you like to keep exploring? (Y or N): ')
                     if decision.lower() in yesCommands:
                         endFlag = True
-                        print('Enter a quit command to leave the game once you are done exploring!')
+                        print(
+                            'Enter a quit command to leave the game once you are done exploring!')
                     elif decision.lower() in noCommands:
                         self.endGame(1)
             player.checkMoves()
@@ -548,7 +563,8 @@ gameMap = map(5, 4, mapLocations, shortLocations, items)
 
 # title display routine
 def displayTitle():
-    cprint(figlet_format('A Huge Text Adventure!', font='larry3d'), 'red', attrs=['bold'])
+    cprint(figlet_format('A Huge Text Adventure!',
+                         font='larry3d'), 'red', attrs=['bold'])
 
 
 # starting routine
@@ -560,7 +576,8 @@ def startGame():
         randomRow, randomColumn = gameMap.randomRowCol()
     character = Player(input('Enter the name of your character: '), randomRow,
                        randomColumn, gameMap)
-    game.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
+    game.setDifficulty(input(
+        'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
     print('\nEnter the \'help\' command to see what you can do!\n')
     game.gameLoop(character, gameMap)
 
