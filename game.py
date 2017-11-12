@@ -115,7 +115,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation += 1
             else:
-                map.visitLocation(self)
+                map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'south':
             self.rowLocation += 1
@@ -123,7 +123,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation -= 1
             else:
-                map.visitLocation(self)
+                map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'east':
             self.colLocation += 1
@@ -131,7 +131,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation -= 1
             else:
-                map.visitLocation(self)
+                map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'west':
             self.colLocation -= 1
@@ -139,7 +139,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation += 1
             else:
-                map.visitLocation(self)
+                map.visitLocation(self, map)
                 self.increaseMoves()
         else:
             game.displayError(1, self)
@@ -292,15 +292,18 @@ class map:
 
     # this method is used to 'visit' a location on the map by changing its flag value and increasing the player's score
     # if it is a previously unvisited special location
-    def visitLocation(self, player):
+    def visitLocation(self, player, map):
         if self.getVisited(player) == 'Flag':
+            player.getLongLocation(map)
             self.setVisited(player)
         elif self.getVisited(player) is False:
             player.increaseScore()
             player.displayScore()
+            player.getLongLocation(map)
             self.setVisited(player)
         elif self.getVisited(player) is True:
             print('You have already discovered this location!')
+            player.getLocation(map)
 
     # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
     # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
@@ -471,34 +474,6 @@ class game:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
 
-    # this method is the main game loop which is called at the start of the game and runs until the end of the process
-    # it handles getting the command from the user, checking to see if the player has visited all of the locations as
-    # well as checking the amount of moves the player has completed
-    def gameLoop(self, player, gameMap):
-        player.getLongLocation(gameMap)
-        gameMap.visitLocation(player)
-        endFlag = False
-        while 1:
-            locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
-            game.checkSpecialLocation(player, gameMap)
-            if locationFlag == 'long':
-                pass
-            else:
-                if gameMap.getVisited(player) is False:
-                    player.getLongLocation(gameMap)
-                else:
-                    player.getLocation(gameMap)
-            count = gameMap.checkVisited()
-            if count == gameMap.rowSize * gameMap.colSize:
-                while endFlag is False:
-                    decision = input('Would you like to keep exploring? (Y or N): ')
-                    if decision.lower() in yesCommands:
-                        endFlag = True
-                        print('Enter a quit command to leave the game once you are done exploring!')
-                    elif decision.lower() in noCommands:
-                        self.endGame(1)
-            player.checkMoves()
-
     # the specialEnding method displays the result of the ending which the player has accessed. It checks the conditions
     # the same as the checkSpecialLocation method to ensure that they are met and then displays a special message and
     # quits the game
@@ -507,21 +482,23 @@ class game:
             cprint('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!',
                    'green')
             self.endGame(3)
-        else:
+        elif map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' not in \
+                player.inventory:
             cprint('You try to climb the falls with no rope, this was an obviously stupid idea. You fall to your death '
                   'from 60 feet in the air.', 'red')
             self.endGame(3)
-        if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in player.inventory \
-                and 'sword' in player.inventory:
+        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in \
+                player.inventory and 'sword' in player.inventory:
             cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
                   'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                   'you. You are saved!', 'green')
             self.endGame(3)
-        else:
+        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' not in \
+                player.inventory and 'sword' not in player.inventory:
             cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
                   'succumb to a well hidden trap.', 'red')
             self.endGame(3)
-        if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+        elif map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
                   'out alive.', 'red')
             self.endGame(3)
@@ -540,6 +517,28 @@ class game:
         elif endingNo == 4:
             cprint(ending5 + copyrightMessage, 'blue')
             quit()
+
+    # this method is the main game loop which is called at the start of the game and runs until the end of the process
+    # it handles getting the command from the user, checking to see if the player has visited all of the locations as
+    # well as checking the amount of moves the player has completed
+    def gameLoop(self, player, gameMap):
+        gameMap.visitLocation(player, gameMap)
+        endFlag = False
+        while 1:
+            locationFlag = self.getCommand(player, input('\n' + 'What would you like to do?: '), gameMap)
+            game.checkSpecialLocation(player, gameMap)
+            if locationFlag == 'long':
+                pass
+            count = gameMap.checkVisited()
+            if count == gameMap.rowSize * gameMap.colSize:
+                while endFlag is False:
+                    decision = input('Would you like to keep exploring? (Y or N): ')
+                    if decision.lower() in yesCommands:
+                        endFlag = True
+                        print('Enter a quit command to leave the game once you are done exploring!')
+                    elif decision.lower() in noCommands:
+                        self.endGame(1)
+            player.checkMoves()
 
 
 # class instantiations, defines the size of the map and the locations to place in it
