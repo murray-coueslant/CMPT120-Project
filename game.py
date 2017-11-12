@@ -554,7 +554,7 @@ def displayTitle():
 # starting routine
 def startGame():
     displayTitle()
-    input(introduction)
+    var = input(introduction)
     randomRow, randomColumn = gameMap.randomRowCol()
     while gameMap.map[randomRow][randomColumn][1] == 'Fallen Tree':
         randomRow, randomColumn = gameMap.randomRowCol()
