@@ -240,7 +240,7 @@ class map:
         self.locations = locations
         self.shortLocations = shortLocations
         self.items = items
-        # defines a 2D array of an arbitrary size which is defined when the class is instantiated
+        # defines a 2D array of an arbitrary size, which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)]
                     for rows in range(rowSize)]
         orderList = list(range(len(self.locations)))
