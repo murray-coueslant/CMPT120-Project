@@ -501,7 +501,7 @@ class game:
             self.endGame(3)
         elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in \
                 player.inventory and 'sword' in player.inventory:
-            cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits'
+            cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits '
                    'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                    'you. You are saved!', 'green')
             self.endGame(3)
