@@ -5,7 +5,6 @@ from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
 
-
 # variable definitions, these are things which are used often like message strings etc... or things which would make
 # code look ugly if used often in their normal form
 
@@ -102,7 +101,7 @@ class Player:
         self.colLocation = colLocation
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = []
+        self.inventory = ['map']
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -218,7 +217,7 @@ class Player:
 
     def getScore(self):
         return self.score
-
+    
     def increaseScore(self):
         self.score += 5
 
@@ -430,13 +429,13 @@ class game:
 
     # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
     def setDifficulty(self, difficulty, player, map):
-        if difficulty.lower() in easyWords:
+        if difficulty.lower().strip() in easyWords:
             player.maxMoves = 5 * (map.colSize * map.rowSize)
             return
-        elif difficulty.lower() in mediumWords:
+        elif difficulty.lower().strip() in mediumWords:
             player.maxMoves = 3 * (map.colSize * map.rowSize)
             return
-        elif difficulty.lower() in hardWords:
+        elif difficulty.lower().strip() in hardWords:
             player.maxMoves = 2 * (map.colSize * map.rowSize)
             return
         else:
@@ -449,37 +448,38 @@ class game:
     # TODO: this whole function is super long and convoluted, i'm sure there is an easier way to parse commands from the
     # TODO: user and condense this whole code
     def getCommand(self, player, command, map):
-        if command.lower() in northCommands:
+        command = command.strip().lower()
+        if command in northCommands:
             player.movePlayer('north', map)
-        elif command.lower() in eastCommands:
+        elif command in eastCommands:
             player.movePlayer('east', map)
-        elif command.lower() in southCommands:
+        elif command in southCommands:
             player.movePlayer('south', map)
-        elif command.lower() in westCommands:
+        elif command in westCommands:
             player.movePlayer('west', map)
-        elif command.lower() in helpCommands:
+        elif command in helpCommands:
             self.displayHelp()
-        elif command.lower() in mapCommands:
+        elif command in mapCommands:
             if 'map' in player.inventory:
                 map.displayMap()
             else:
                 print('You cannot look at a map you do not have!')
-        elif command.lower() in scoreCommands:
+        elif command in scoreCommands:
             player.displayScore()
-        elif command.lower() in quitCommands:
+        elif command in quitCommands:
             self.endGame(4)
-        elif command.lower() in lookCommands:
+        elif command in lookCommands:
             player.getLongLocation(map)
             return 'long'
-        elif command.lower() in searchCommands:
+        elif command in searchCommands:
             player.itemSearch(map)
-        elif command.lower() in inventoryCommands:
+        elif command in inventoryCommands:
             player.getInventory()
-        elif command.lower() in takeCommands:
+        elif command in takeCommands:
             player.takeItem(map)
-        elif command.lower() in specialCommands:
+        elif command in specialCommands:
             game.specialEnding(player, map)
-        elif command.lower() == '' or None:
+        elif command == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
         else:
@@ -574,7 +574,7 @@ def startGame():
     randomRow, randomColumn = gameMap.randomRowCol()
     while gameMap.map[randomRow][randomColumn][1] == 'Fallen Tree':
         randomRow, randomColumn = gameMap.randomRowCol()
-    character = Player(input('Enter the name of your character: '), randomRow,
+    character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
                        randomColumn, gameMap)
     game.setDifficulty(input(
         'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
