@@ -101,7 +101,7 @@ class Player:
         self.colLocation = colLocation
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = ['map']
+        self.inventory = []
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,

@@ -1,7 +1,7 @@
 from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
-from classes import Player, Locale
+from classes import Player, Locale, World, Item
 
 longDescriptions = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
                  'the blue expanse of the ocean. You contemplate how you got here, and how you are going to get home.'),
@@ -33,19 +33,22 @@ longDescriptions = [('a sandy beach, the waves lap onto the shore steadily. You 
                  'out what they mean.')]
                 
 shortDescriptions = ['Sandy Beach',
-                  'Dense Rain forest',
-                  'Open Clearing',
-                  'Roaring Waterfall',
-                  'Strange Cave Front',
-                  'Decrepit Marine Dock',
-                  'Abandoned Hut',
-                  'Little Creek',
-                  'Fallen Tree',
-                  'Huge Totem']
+                     'Dense Rain forest',
+                     'Open Clearing',
+                     'Roaring Waterfall',
+                     'Strange Cave Front',
+                     'Decrepit Marine Dock',
+                     'Abandoned Hut',
+                     'Little Creek',
+                     'Fallen Tree',
+                     'Huge Totem']
 
 items = []
 
 locations = []
 
-for i in range(0, len(locations)):
-    locations.append()
+for i in range(0, len(longDescriptions)):
+    locations.append(Locale(longDescriptions[i], shortDescriptions[i]))
+    print(locations[i].shortDescription)
+
+gameWorld = World(locations, 5, 5)
