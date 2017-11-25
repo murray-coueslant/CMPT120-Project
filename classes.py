@@ -1,6 +1,6 @@
 from random import randint, shuffle
 class Item:
-    def __init__(self, name, used, ID):
+    def __init__(self, name, ID, used = False):
         self.name = str(name)
         self.used = used
         self.ID = int(ID)
@@ -54,7 +54,10 @@ class World:
         self.cols = cols
         self.rows = rows
         self.worldMap = [ [None for cols in range(self.cols)] for rows in range(self.rows) ]
+        self.emptyLocale = Locale('an empty place.', 'nowhere')
         self.placeLocations()
+        self.fillEmpty()
+        self.placeItems(itemList)
 
     def placeLocations(self):
         randRow, randCol = self.randomRowCol()
@@ -71,6 +74,28 @@ class World:
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
+    
+    def fillEmpty(self):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self.worldMap[i][j] == None:
+                    self.setEmpty(i, j)
+
+    def setEmpty(self, rowLocation, colLocation):
+        self.worldMap[rowLocation][colLocation] = self.emptyLocale
+
+    def placeItems(self, itemList):
+        orderList = list(range(0, len(itemList)))
+        shuffle(orderList)
+        counter = 0
+        for i in range(self.rows):
+            for j in range(self.cols):
+                rand = randint(0, 10)
+                if len(itemList) > 0:
+                    if rand >= 5:
+                        self.worldMap[i][j].itemList.append(itemList[orderList[counter]])
+                        counter += 1
+                print(self.itemList)
 
 
     def randomRowCol(self):

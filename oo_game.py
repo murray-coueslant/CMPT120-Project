@@ -43,12 +43,24 @@ shortDescriptions = ['Sandy Beach',
                      'Fallen Tree',
                      'Huge Totem']
 
+itemNames = ['map',
+             'rope',
+             'armour',
+             'sword',
+             'pickaxe',
+             'radio']
+
 items = []
 
 locations = []
 
 for i in range(0, len(longDescriptions)):
     locations.append(Locale(longDescriptions[i], shortDescriptions[i]))
-    print(locations[i].shortDescription)
+for i in range(0, len(itemNames)):
+    items.append(Item(itemNames[i], i))
 
 gameWorld = World(locations, 5, 5)
+
+for i in gameWorld.worldMap:
+    print(i.itemList)
+
