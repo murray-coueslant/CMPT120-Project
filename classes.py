@@ -47,7 +47,7 @@ class Locale:
         return self.longDescription
 
 class World:
-    def __init__(self, locationList, cols, rows, player = None, itemList = []):
+    def __init__(self, locationList, cols, rows, itemList, player = None,):
         self.locationList = locationList
         self.player = player
         self.itemList = itemList
@@ -55,17 +55,15 @@ class World:
         self.rows = rows
         self.worldMap = [ [None for cols in range(self.cols)] for rows in range(self.rows) ]
         self.emptyLocale = Locale('an empty place.', 'nowhere')
-        self.placeLocations()
+        self.placeItemsLocations()
         self.fillEmpty()
-        self.placeItems(itemList)
 
-    def placeLocations(self):
+    def placeItemsLocations(self):
         randRow, randCol = self.randomRowCol()
         orderList = list(range(len(self.locationList)))
         itemList = list(range(len(self.itemList)))
         shuffle(orderList)
         shuffle(itemList)
-
         for i in orderList:
             placed = False
             while not placed:
@@ -87,16 +85,8 @@ class World:
     def placeItems(self, itemList):
         orderList = list(range(0, len(itemList)))
         shuffle(orderList)
-        counter = 0
-        for i in range(self.rows):
-            for j in range(self.cols):
-                rand = randint(0, 10)
-                if len(itemList) > 0:
-                    if rand >= 5:
-                        self.worldMap[i][j].itemList.append(itemList[orderList[counter]])
-                        counter += 1
-                print(self.itemList)
-
+        
+            
 
     def randomRowCol(self):
         randRow, randCol = randint(

@@ -56,11 +56,12 @@ locations = []
 
 for i in range(0, len(longDescriptions)):
     locations.append(Locale(longDescriptions[i], shortDescriptions[i]))
+
 for i in range(0, len(itemNames)):
     items.append(Item(itemNames[i], i))
+    print(items[i].name)
 
-gameWorld = World(locations, 5, 5)
 
-for i in gameWorld.worldMap:
-    print(i.itemList)
+gameWorld = World(locations, 5, 5, items)
+
 
