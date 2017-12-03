@@ -34,9 +34,10 @@ ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
 ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
                     'murray.coueslant1@marist.edu. Fair use is permitted.\n')
-helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
-               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world '
-               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n'
+helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, move or travel + a direction'
+               '\n\tquit, exit, leave, end\n\tmap, world, view '
+               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n\t'
+               'take or drop + item\n'
                'or this help command, but you figured that one out, go you!')
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
