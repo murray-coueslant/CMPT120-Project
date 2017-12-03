@@ -18,6 +18,7 @@ lookCommands = ['look', 'view', 'explore']
 searchCommands = ['search', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
 takeCommands = ['take', 'grab', 'pick', 'hold']
+dropCommands = ['drop', 'discard', 'remove']
 specialCommands = ['climb', 'scale', 'enter', 'spelunk', 'use', 'radio']
 easyWords = ['easy', 'e', 'simple']
 mediumWords = ['medium', 'm', 'moderate']
@@ -49,7 +50,7 @@ class Player:
         self.colLocation = colLocation
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = []
+        self.inventory = ['radio', 'map']
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -146,6 +147,16 @@ class Player:
                 print('You have picked up:', item)
             else:
                 print('No', item, 'here!')
+
+    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
+    # it will inform them that it has already been taken
+    def dropItem(self, map, item):
+        if item in self.inventory:
+            print('You have dropped:', str(item))
+            map.map[self.rowLocation][self.colLocation].items.append(item)
+            self.inventory.remove(item)
+        else:
+            cprint('You can\'t drop something you don\'t have', 'red')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -445,13 +456,19 @@ class game:
                 player.takeItem(map, parseCommand[1])
             else:
                 print(parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
+        elif parseCommand[0] in dropCommands:
+            if len(parseCommand) > 1:
+                player.dropItem(map, parseCommand[1])
+            else:
+                print(parseCommand[0], 'must be paired with an item. Enter the item you want to drop.')
         elif parseCommand[0] in specialCommands:
             if parseCommand[0] == 'use':
                 if len(parseCommand) > 1 and parseCommand[1] == 'radio':
                     game.specialEnding(self, player, map)
                 else:
                     cprint('You need to use something!', 'red')
-            game.specialEnding(self, player, map)
+            else:
+                game.specialEnding(self, player, map)
         elif parseCommand[0] == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
@@ -482,6 +499,11 @@ class game:
                 player.inventory and 'sword' not in player.inventory:
             cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
                    'succumb to a well hidden trap.', 'red')
+            self.endGame(3)
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Abandoned Hut' and 'radio' in player.inventory:
+            cprint('You lock yourself in the hut whilst whatever you heard passes by. You hook up the radio to the electricity and eventually manage to '
+                   'connect with someone who can help you. A couple of days later a boat arrives to take you home.',
+                   'green')
             self.endGame(3)
         elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '

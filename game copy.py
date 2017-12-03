@@ -37,7 +37,10 @@ mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look
                  'There are clearly animals who call this trunk their home. You decide to move on, you\'d rather not '
                  'meet any of them.'),
                 ('a huge totem. There are bizarre symbols carved into the sculpture. Maybe you will return to figure '
-                 'out what they mean.')]
+                 'out what they mean.'),
+                 ('a crashed plane. The hull is rusted and old. There are signs of previous inhabitants here, however it'
+                  'does not look like anyone has lived here for a long time.'),
+                  ('a deep well. You drop a stone down the structure, but you never hear it land. You wonder where it leads.')]
 shortLocations = ['Sandy Beach',
                   'Dense Rain forest',
                   'Open Clearing',
@@ -47,7 +50,9 @@ shortLocations = ['Sandy Beach',
                   'Abandoned Hut',
                   'Little Creek',
                   'Fallen Tree',
-                  'Huge Totem']
+                  'Huge Totem',
+                  'Crashed Plane',
+                  'Deep Well']
 
 # item set definition
 items = ['map',
