@@ -70,5 +70,3 @@ while 1:
         print(gameWorld.nonVisitedDescription())
         gameWorld.visit()
     player.getCommand(input('Enter a command: '), gameWorld)
-
-

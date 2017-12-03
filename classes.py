@@ -148,8 +148,6 @@ class World:
         orderList = list(range(len(itemList)))
         shuffle(orderList)
         for i in orderList:
-            print(i)
-            print(itemList[i].name)
             row, col = self.randomRowCol()
             placed = False
             while not placed:
@@ -165,6 +163,7 @@ class World:
         self.player.currentX, self.player.currentY = col, row
 
     def checkVisited(self):
+        print(self.player.currentX, self.player.currentY)
         return self.worldMap[self.player.currentY][self.player.currentX].visited
 
     def visit(self):
