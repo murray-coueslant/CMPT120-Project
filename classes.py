@@ -2,6 +2,27 @@ from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
 
+# command set definitions
+movementCommands = ['go', 'move', 'travel']
+northCommands = ['n', 'north']
+eastCommands = ['e', 'east']
+southCommands = ['s', 'south']
+westCommands = ['w', 'west']
+helpCommands = ['h', 'help']
+mapCommands = ['m', 'map', 'world']
+scoreCommands = ['score', 'points', 'total']
+yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
+noCommands = ['n', 'no', 'nope', 'nah']
+quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
+lookCommands = ['look', 'view', 'explore']
+searchCommands = ['search', 'examine']
+inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
+takeCommands = ['take', 'grab', 'pick', 'hold']
+specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+easyWords = ['easy', 'e', 'simple']
+mediumWords = ['medium', 'm', 'moderate']
+hardWords = ['hard', 'h', 'complex']
+
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
 class Player:

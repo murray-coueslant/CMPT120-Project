@@ -69,27 +69,6 @@ items = ['map',
          'armour',
          'sword']
 
-# command set definitions
-movementCommands = ['go', 'move', 'travel']
-northCommands = ['n', 'north']
-eastCommands = ['e', 'east']
-southCommands = ['s', 'south']
-westCommands = ['w', 'west']
-helpCommands = ['h', 'help']
-mapCommands = ['m', 'map', 'world']
-scoreCommands = ['score', 'points', 'total']
-yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
-noCommands = ['n', 'no', 'nope', 'nah']
-quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
-lookCommands = ['look', 'view', 'explore']
-searchCommands = ['search', 'examine']
-inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
-takeCommands = ['take', 'grab', 'pick', 'hold']
-specialCommands = ['climb', 'scale', 'enter', 'spelunk']
-easyWords = ['easy', 'e', 'simple']
-mediumWords = ['medium', 'm', 'moderate']
-hardWords = ['hard', 'h', 'complex']
-
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
 gameMap = map(5, 4, mapLocations, shortLocations, items)
