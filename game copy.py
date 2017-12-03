@@ -69,20 +69,21 @@ items = ['map',
          'sword']
 
 # command set definitions
-northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
-eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
-southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
-westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
-helpCommands = ['h', 'help', 'help me', 'get help']
-mapCommands = ['m', 'map', 'world', 'show map', 'view world']
+movementCommands = ['go', 'move', 'travel']
+northCommands = ['n', 'north']
+eastCommands = ['e', 'east']
+southCommands = ['s', 'south']
+westCommands = ['w', 'west']
+helpCommands = ['h', 'help']
+mapCommands = ['m', 'map', 'world']
 scoreCommands = ['score', 'points', 'total']
 yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
-noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
+noCommands = ['n', 'no', 'nope', 'nah']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
-lookCommands = ['look', 'look around', 'view', 'explore']
-searchCommands = ['search', 'search area', 'search location', 'examine']
+lookCommands = ['look', 'view', 'explore']
+searchCommands = ['search', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
-takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
+takeCommands = ['take', 'grab', 'pick', 'hold']
 specialCommands = ['climb', 'scale', 'enter', 'spelunk']
 easyWords = ['easy', 'e', 'simple']
 mediumWords = ['medium', 'm', 'moderate']
@@ -455,38 +456,42 @@ class game:
     # TODO: this whole function is super long and convoluted, i'm sure there is an easier way to parse commands from the
     # TODO: user and condense this whole code
     def getCommand(self, player, command, map):
-        command = command.strip().lower()
-        if command in northCommands:
-            player.movePlayer('north', map)
-        elif command in eastCommands:
-            player.movePlayer('east', map)
-        elif command in southCommands:
-            player.movePlayer('south', map)
-        elif command in westCommands:
-            player.movePlayer('west', map)
-        elif command in helpCommands:
+        inCommand = command.strip().lower()
+        parseCommand = inCommand.split(' ')
+        if parseCommand[0] in movementCommands:
+            if command in northCommands:
+                player.movePlayer('north', map)
+            elif command in eastCommands:
+                player.movePlayer('east', map)
+            elif command in southCommands:
+                player.movePlayer('south', map)
+            elif command in westCommands:
+                player.movePlayer('west', map)
+            else:
+                print(parseCommand[0], 'must be paired with a direction. Try entering a direction.')
+        elif parseCommand[0] in helpCommands:
             self.displayHelp()
-        elif command in mapCommands:
+        elif parseCommand[0] in mapCommands:
             if 'map' in player.inventory:
                 map.displayMap()
             else:
                 print('You cannot look at a map you do not have!')
-        elif command in scoreCommands:
+        elif parseCommand[0] in scoreCommands:
             player.displayScore()
-        elif command in quitCommands:
+        elif parseCommand[0] in quitCommands:
             self.endGame(4)
-        elif command in lookCommands:
+        elif parseCommand[0] in lookCommands:
             player.getLongLocation(map)
             return 'long'
-        elif command in searchCommands:
+        elif parseCommand[0] in searchCommands:
             player.itemSearch(map)
-        elif command in inventoryCommands:
+        elif parseCommand[0] in inventoryCommands:
             player.getInventory()
-        elif command in takeCommands:
+        elif parseCommand[0] in takeCommands:
             player.takeItem(map)
-        elif command in specialCommands:
+        elif parseCommand[0] in specialCommands:
             game.specialEnding(player, map)
-        elif command == '' or None:
+        elif parseCommand[0] == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
         else:
