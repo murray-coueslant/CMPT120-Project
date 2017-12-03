@@ -1,3 +1,7 @@
+from pyfiglet import figlet_format
+from termcolor import cprint
+from random import shuffle, randint
+
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
 class Player:
