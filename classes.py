@@ -46,11 +46,12 @@ helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, 
 
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, rowLocation, colLocation, map, score=0):
+    def __init__(self, name, rowLocation, colLocation, map, score=0, currentLocale = ''):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
         self.colLocation = colLocation
+        self.currentLocale = currentLocale
         self.moves = 0
         self.maxMoves = 0
         self.inventory = []
@@ -66,6 +67,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation += 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'south':
@@ -74,6 +76,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation -= 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'east':
@@ -82,6 +85,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation -= 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'west':
@@ -90,6 +94,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation += 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         else:
