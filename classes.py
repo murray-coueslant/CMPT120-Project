@@ -52,7 +52,7 @@ class Player:
         self.colLocation = colLocation
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = ['radio', 'map']
+        self.inventory = []
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -136,8 +136,7 @@ class Player:
         else:
             print('You have already searched here!')
 
-    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
-    # it will inform them that it has already been taken
+    # takeItem adds the item to the player's inventory and removes it from the location it was found in
     def takeItem(self, map, item):
         if map.map[self.rowLocation][self.colLocation].searched is False:
             print('You can\'t take something you haven\'t looked for!')
@@ -150,8 +149,7 @@ class Player:
             else:
                 print('No', item, 'here!')
 
-    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
-    # it will inform them that it has already been taken
+    # dropItem removes the item from the player's inventory and returns it to the current location
     def dropItem(self, map, item):
         if item in self.inventory:
             print('You have dropped:', str(item))
