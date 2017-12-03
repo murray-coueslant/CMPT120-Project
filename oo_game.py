@@ -1,9 +1,16 @@
+# a more complex text adventure game, with a randomly generated map and player control
+# Written by: Murray Coueslant, Date: 2017/12/3
+
 from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
-from classes import Player, Locale, World, Item
+from classes import Player, map, Locale, game
 
-longDescriptions = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
+introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
+                'it is your task to explore your surroundings. Press enter to begin.')
+
+# location set definition
+mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
                  'the blue expanse of the ocean. You contemplate how you got here, and how you are going to get home.'),
                 ('a dense rain forest. The sound of creatures in the bush is overwhelming, the smell is tropical. '
                  'You are afraid, a predator could appear at any time. You think about what would happen if you did '
@@ -30,43 +37,55 @@ longDescriptions = [('a sandy beach, the waves lap onto the shore steadily. You 
                  'There are clearly animals who call this trunk their home. You decide to move on, you\'d rather not '
                  'meet any of them.'),
                 ('a huge totem. There are bizarre symbols carved into the sculpture. Maybe you will return to figure '
-                 'out what they mean.')]
-                
-shortDescriptions = ['Sandy Beach',
-                     'Dense Rain forest',
-                     'Open Clearing',
-                     'Roaring Waterfall',
-                     'Strange Cave Front',
-                     'Decrepit Marine Dock',
-                     'Abandoned Hut',
-                     'Little Creek',
-                     'Fallen Tree',
-                     'Huge Totem']
+                 'out what they mean.'),
+                 ('a crashed plane. The hull is rusted and old. There are signs of previous inhabitants here, however it'
+                  'does not look like anyone has lived here for a long time.'),
+                  ('a deep well. You drop a stone down the structure, but you never hear it land. You wonder where it leads.')]
+shortLocations = ['Sandy Beach',
+                  'Dense Rain forest',
+                  'Open Clearing',
+                  'Roaring Waterfall',
+                  'Strange Cave Front',
+                  'Decrepit Marine Dock',
+                  'Abandoned Hut',
+                  'Little Creek',
+                  'Fallen Tree',
+                  'Huge Totem',
+                  'Crashed Plane',
+                  'Deep Well']
 
-itemNames = ['map',
-             'rope',
-             'armour',
-             'sword',
-             'pickaxe',
-             'radio']
+# item set definition
+items = ['map',
+         'rope',
+         'armour',
+         'sword',
+         'radio',
+         'pickaxe']
 
-items = []
+# class instantiations, defines the size of the map and the locations to place in it
+game = game()
+gameMap = map(5, 4, mapLocations, shortLocations, items)
 
-locations = []
 
-for i in range(0, len(longDescriptions)):
-    locations.append(Locale(longDescriptions[i], shortDescriptions[i]))
+# title display routine
+def displayTitle():
+    cprint(figlet_format('A Huge Text Adventure!',
+                         font='larry3d'), 'red', attrs=['bold'])
 
-for i in range(0, len(itemNames)):
-    items.append(Item(itemNames[i], i))
 
-player = Player(input('Enter your name: '))
-gameWorld = World(locations, 5, 5, items, player)
-gameWorld.spawnPlayer()
-while 1:
-    if gameWorld.checkVisited() == True:
-        print(gameWorld.visitedDescription())
-    else:
-        print(gameWorld.nonVisitedDescription())
-        gameWorld.visit()
-    player.getCommand(input('Enter a command: '), gameWorld)
+# starting routine
+def startGame():
+    displayTitle()
+    var = input(introduction)
+    randomRow, randomColumn = gameMap.randomRowCol()
+    while gameMap.map[randomRow][randomColumn].shortDescription == 'Fallen Tree':
+        randomRow, randomColumn = gameMap.randomRowCol()
+    character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
+                       randomColumn, gameMap)
+    game.setDifficulty(input(
+        'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
+    print('\nEnter the \'help\' command to see what you can do!\n')
+    game.gameLoop(character, gameMap)
+
+
+startGame()
