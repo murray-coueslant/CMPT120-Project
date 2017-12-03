@@ -37,7 +37,7 @@ copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries ca
 helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, move or travel + a direction'
                '\n\tquit, exit, leave, end\n\tmap, world, view '
                '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n\t'
-               'take or drop + item\n\t use + item \n'
+               'take or drop + item\n\tuse + item \n'
                'or this help command, but you figured that one out, go you!')
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
