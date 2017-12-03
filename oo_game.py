@@ -59,9 +59,10 @@ for i in range(0, len(longDescriptions)):
 
 for i in range(0, len(itemNames)):
     items.append(Item(itemNames[i], i))
-    print(items[i].name)
+
+player = Player(input('Enter your name: '))
+gameWorld = World(locations, 5, 5, items, player)
 
 
-gameWorld = World(locations, 5, 5, items)
 
 

@@ -228,9 +228,17 @@ class Player:
         cprint((self.getName() + ', ' + 'your score is: ' +
                 str(self.getScore())), 'blue')
 
+
+# class Locale:
+#     def __init__(self, longDescription, shortDescription, visited, items, searched):
+#         self.longDescription = longDescription
+#         self.shortDescription = shortDescription
+#         self.visited = visited
+#         self.items = items
+#         self.searched = searched
+        
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
-
 
 class map:
     def __init__(self, rowSize, colSize, locations, shortLocations, items):
