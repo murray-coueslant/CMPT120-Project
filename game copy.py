@@ -228,14 +228,14 @@ class Player:
         cprint((self.getName() + ', ' + 'your score is: ' +
                 str(self.getScore())), 'blue')
 
-
-# class Locale:
-#     def __init__(self, longDescription, shortDescription, visited, items, searched):
-#         self.longDescription = longDescription
-#         self.shortDescription = shortDescription
-#         self.visited = visited
-#         self.items = items
-#         self.searched = searched
+# locale class greatly simplifies accessing the different pieces of data required at each location
+class Locale:
+    def __init__(self, longDescription, shortDescription, items = [], visited = False, searched = False):
+        self.longDescription = longDescription
+        self.shortDescription = shortDescription
+        self.visited = visited
+        self.items = items
+        self.searched = searched
         
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
@@ -266,17 +266,16 @@ class map:
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
                     if self.shortLocations[i] == 'Fallen Tree':
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, [None, True],
-                                                      False]
+                        self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i])
                         placed = True
                     else:
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
-                                                      [items[itemList[itemCounter]], False], False]
+                        self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i],
+                                                      [items[itemList[itemCounter]]])
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i],
-                                                  self.shortLocations[i], False, None, False]
+                    self.map[randRow][randCol] = Locale(self.locations[i],
+                                                  self.shortLocations[i])
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -288,8 +287,8 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['an empty place.',
-                                      'nowhere', 'Flag', None, False]
+                    self.map[i][j] = Locale('an empty place.',
+                                      'nowhere', [], 'Flag')
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -298,7 +297,7 @@ class map:
         cols, rows = self.getSizes()
         for j in range(cols):
             for i in range(rows):
-                if map[i][j][2] is True:
+                if map[i][j].visited is True:
                     visitedCount += 1
         return visitedCount
 
@@ -325,11 +324,11 @@ class map:
         maxLen = self.getMaxLen(self.shortLocations)
         for i in range(self.rowSize):
             for j in range(self.colSize):
-                if len(map[i][j][1]) == maxLen:
+                if len(map[i][j].shortDescription) == maxLen:
                     whitespace = ''
                 else:
-                    whitespace = (maxLen - len(map[i][j][1])) * ' '
-                spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
+                    whitespace = (maxLen - len(map[i][j].shortDescription)) * ' '
+                spacedLocations[i][j] = str(map[i][j].shortDescription) + str(whitespace)
         return spacedLocations, maxLen
 
     # prints a single row of the game map, along with the correct separators for the map layout
@@ -376,16 +375,16 @@ class map:
         return self.colSize, self.rowSize
 
     def getLocation(self, player):
-        return self.map[player.rowLocation][player.colLocation][1]
+        return self.map[player.rowLocation][player.colLocation].shortDescription
 
     def getLongLocation(self, player):
-        return self.map[player.rowLocation][player.colLocation][0]
+        return self.map[player.rowLocation][player.colLocation].longDescription
 
     def getVisited(self, player):
-        return self.map[player.rowLocation][player.colLocation][2]
+        return self.map[player.rowLocation][player.colLocation].visited
 
     def setVisited(self, player):
-        self.map[player.rowLocation][player.colLocation][2] = True
+        self.map[player.rowLocation][player.colLocation].visited = True
 
     def getMap(self):
         return self.map
@@ -417,21 +416,21 @@ class game:
     # has a special ending. If the correct items for the ending are in the player's inventory, a message is shown, if
     # not nothing is shown to the player until they have the correct items
     def checkSpecialLocation(self, player, map):
-        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall':
             if 'rope' in player.inventory:
                 cprint('You have something in your possession which might help you here. Try climbing the falls.',
                        'yellow')
             else:
                 cprint(
                     'Perhaps if you had a rope or a safety net, you could climb these falls...', 'yellow')
-        if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front':
             if 'armour' in player.inventory and 'sword' in player.inventory:
                 cprint(
                     'You are well equipped for exploring, try entering the cave.', 'yellow')
             else:
                 cprint(
                     'Maybe you could enter the cave, if you had the right equipment...', 'yellow')
-        if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             if 'armour' not in player.inventory:
                 self.specialEnding(player, map)
 
@@ -498,27 +497,27 @@ class game:
     # the same as the checkSpecialLocation method to ensure that they are met and then displays a special message and
     # quits the game
     def specialEnding(self, player, map):
-        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' in player.inventory:
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall' and 'rope' in player.inventory:
             cprint('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!',
                    'green')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' not in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall' and 'rope' not in \
                 player.inventory:
             cprint('You try to climb the falls with no rope, this was an obviously stupid idea. You fall to your death '
                    'from 60 feet in the air.', 'red')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front' and 'armour' in \
                 player.inventory and 'sword' in player.inventory:
             cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits '
                    'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                    'you. You are saved!', 'green')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' not in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front' and 'armour' not in \
                 player.inventory and 'sword' not in player.inventory:
             cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
                    'succumb to a well hidden trap.', 'red')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
                    'out alive.', 'red')
             self.endGame(3)
@@ -580,7 +579,7 @@ def startGame():
     displayTitle()
     var = input(introduction)
     randomRow, randomColumn = gameMap.randomRowCol()
-    while gameMap.map[randomRow][randomColumn][1] == 'Fallen Tree':
+    while gameMap.map[randomRow][randomColumn].shortDescription == 'Fallen Tree':
         randomRow, randomColumn = gameMap.randomRowCol()
     character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
                        randomColumn, gameMap)
