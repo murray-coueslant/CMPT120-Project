@@ -1,5 +1,5 @@
 # a more complex text adventure game, with a randomly generated map and player control
-# Written by: Murray Coueslant, Date: 2017/11/12
+# Written by: Murray Coueslant, Date: 2017/12/3
 
 from pyfiglet import figlet_format
 from termcolor import cprint
