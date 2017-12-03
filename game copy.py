@@ -176,32 +176,33 @@ class Player:
         if map.map[self.rowLocation][self.colLocation].searched is False:
             if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
                 item = map.map[self.rowLocation][self.colLocation].items
+                print(item)
                 print('You have found:\n')
-                for i in item:
-                    print('\t'+str(item[i]))
+                print('\t'+str(item))
                 map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
-                map.map[self.rowLocation][self.colLocation][4] = True
+                map.map[self.rowLocation][self.colLocation].searched = True
         else:
             print('You have already searched here!')
 
     # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
     # it will inform them that it has already been taken
-    def takeItem(self, map):
-        if map.map[self.rowLocation][self.colLocation][4] is False:
-            print('You can\'t take something you haven\'t looked for!')
-        else:
-            if map.map[self.rowLocation][self.colLocation][3] is not None:
-                item = map.map[self.rowLocation][self.colLocation][3]
-                if item[1] is False:
-                    self.inventory.append(item[0])
-                    print('You have picked up:', item[0])
-                    item[1] = True
-                else:
-                    print("You have already picked up the", item[0])
-            else:
-                cprint('Nothing to take!', 'red')
+    def takeItem(self, map, item):
+        pass
+        # if map.map[self.rowLocation][self.colLocation].searched is False:
+        #     print('You can\'t take something you haven\'t looked for!')
+        # else:
+        #     if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
+        #         item = map.map[self.rowLocation][self.colLocation].items
+        #         if item[1] is False:
+        #             self.inventory.append(item[0])
+        #             print('You have picked up:', item[0])
+        #             item[1] = True
+        #         else:
+        #             print("You have already picked up the", item[0])
+        #     else:
+        #         cprint('Nothing to take!', 'red')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -491,7 +492,10 @@ class game:
         elif parseCommand[0] in inventoryCommands:
             player.getInventory()
         elif parseCommand[0] in takeCommands:
-            player.takeItem(map)
+            if len(parseCommand) > 1:
+                player.takeItem(map, parseCommand[1])
+            else:
+                print(parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
         elif parseCommand[0] in specialCommands:
             game.specialEnding(player, map)
         elif parseCommand[0] == '' or None:
