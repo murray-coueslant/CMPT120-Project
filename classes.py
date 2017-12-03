@@ -171,7 +171,10 @@ class World:
         self.worldMap[self.player.currentY][self.player.currentX].visit()
 
     def nonVisitedDescription(self):
-        return self.worldMap[self.player.currentY][self.player.currentX].longDescription
+        try:
+            return self.worldMap[self.player.currentY][self.player.currentX].longDescription
+        except IndexError:
+            return self.worldMap[self.player.currentY][self.player.currentX].longDescription
     
     def visitedDescription(self):
         return self.worldMap[self.player.currentY][self.player.currentX].shortDescription
