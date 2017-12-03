@@ -173,11 +173,13 @@ class Player:
 
     # itemSearch looks in the player's current position to see if there is a retrievable item for the player there
     def itemSearch(self, map):
-        if map.map[self.rowLocation][self.colLocation][4] is False:
-            if map.map[self.rowLocation][self.colLocation][3] is not None:
-                item = map.map[self.rowLocation][self.colLocation][3]
-                print('You have found:', item[0])
-                map.map[self.rowLocation][self.colLocation][4] = True
+        if map.map[self.rowLocation][self.colLocation].searched is False:
+            if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
+                item = map.map[self.rowLocation][self.colLocation].items
+                print('You have found:\n')
+                for i in item:
+                    print('\t'+str(item[i]))
+                map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
                 map.map[self.rowLocation][self.colLocation][4] = True
@@ -271,7 +273,7 @@ class map:
                         placed = True
                     else:
                         self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i],
-                                                      [items[itemList[itemCounter]]])
+                                                     items[itemList[itemCounter]])
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
@@ -459,14 +461,15 @@ class game:
         inCommand = command.strip().lower()
         parseCommand = inCommand.split(' ')
         if parseCommand[0] in movementCommands:
-            if command in northCommands:
-                player.movePlayer('north', map)
-            elif command in eastCommands:
-                player.movePlayer('east', map)
-            elif command in southCommands:
-                player.movePlayer('south', map)
-            elif command in westCommands:
-                player.movePlayer('west', map)
+            if len(parseCommand) > 1:
+                if parseCommand[1] in northCommands:
+                    player.movePlayer('north', map)
+                elif parseCommand[1] in eastCommands:
+                    player.movePlayer('east', map)
+                elif parseCommand[1] in southCommands:
+                    player.movePlayer('south', map)
+                elif parseCommand[1] in westCommands:
+                    player.movePlayer('west', map)
             else:
                 print(parseCommand[0], 'must be paired with a direction. Try entering a direction.')
         elif parseCommand[0] in helpCommands:
