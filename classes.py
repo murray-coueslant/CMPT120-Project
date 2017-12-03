@@ -30,17 +30,20 @@ class Player:
         self.takeCommands = ['take', 'grab', 'pick', 'hold']
         self.specialCommands = ['climb', 'scale', 'enter', 'spelunk']
 
-    def getCommand(self, command, map):
-        command.split(' ')
+    def getCommand(self, inCommand, map):
+        command = inCommand.split(' ')
         if command[0] in self.movementCommands:
-            if command[1] in self.northCommands:
-                self.movePlayer('n', map)
-            elif command[1] in self.eastCommands:
-                self.movePlayer('e', map)
-            elif command[1] in self.southCommands:
-                self.movePlayer('s', map)
-            elif command[1] in self.westCommands:
-                self.movePlayer('w', map)
+            if len(command) == 2:
+                if command[1] in self.northCommands:
+                    self.movePlayer('n', map)
+                elif command[1] in self.eastCommands:
+                    self.movePlayer('e', map)
+                elif command[1] in self.southCommands:
+                    self.movePlayer('s', map)
+                elif command[1] in self.westCommands:
+                    self.movePlayer('w', map)
+            else:
+                print(command[0], 'must be paired with a direction. Enter a direction.')
         elif command[0] in self.northCommands:
             self.movePlayer('n', map)
         elif command[0] in self.eastCommands:
@@ -49,7 +52,7 @@ class Player:
             self.movePlayer('s', map)
         elif command[0] in self.westCommands:
             self.movePlayer('w', map)
-        elif command[0] in takeCommands:
+        elif command[0] in self.takeCommands:
             pass
 
 
@@ -160,6 +163,12 @@ class World:
     def spawnPlayer(self):
         row, col = self.randomRowCol()
         self.player.currentX, self.player.currentY = col, row
+
+    def checkVisited(self):
+        return self.worldMap[self.player.currentY][self.player.currentX].visited
+
+    def visit(self):
+        self.worldMap[self.player.currentY][self.player.currentX].visit()
 
     def nonVisitedDescription(self):
         return self.worldMap[self.player.currentY][self.player.currentX].longDescription

@@ -65,6 +65,10 @@ gameWorld = World(locations, 5, 5, items, player)
 
 while 1:
     player.getCommand(input('Enter a command: '), gameWorld)
-    print(player.currentX, player.currentY)
+    if gameWorld.checkVisited() == True:
+        print(gameWorld.visitedDescription())
+    else:
+        print(gameWorld.nonVisitedDescription())
+        gameWorld.visit()
 
 
