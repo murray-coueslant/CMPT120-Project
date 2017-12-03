@@ -6,22 +6,8 @@ from termcolor import cprint
 from random import shuffle, randint
 from classes import Player, map, Locale, game
 
-# variable definitions, these are things which are used often like message strings etc... or things which would make
-# code look ugly if used often in their normal form
-
 introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
                 'it is your task to explore your surroundings. Press enter to begin.')
-ending1 = '\nCongratulations, you have explored the whole island!\n'
-ending2 = '\nUnfortunately, you have run out of moves!\n'
-ending3 = '\nYou discovered a special ending, congratulations!\n'
-ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
-ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
-copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
-                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
-helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
-               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world '
-               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n'
-               'or this help command, but you figured that one out, go you!')
 
 # location set definition
 mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
@@ -67,7 +53,9 @@ shortLocations = ['Sandy Beach',
 items = ['map',
          'rope',
          'armour',
-         'sword']
+         'sword',
+         'radio',
+         'pickaxe']
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()

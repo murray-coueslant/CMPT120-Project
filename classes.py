@@ -18,10 +18,25 @@ lookCommands = ['look', 'view', 'explore']
 searchCommands = ['search', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
 takeCommands = ['take', 'grab', 'pick', 'hold']
-specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+specialCommands = ['climb', 'scale', 'enter', 'spelunk', 'use', 'radio']
 easyWords = ['easy', 'e', 'simple']
 mediumWords = ['medium', 'm', 'moderate']
 hardWords = ['hard', 'h', 'complex']
+
+# variable definitions, these are things which are used often like message strings etc... or things which would make
+# code look ugly if used often in their normal form
+
+ending1 = '\nCongratulations, you have explored the whole island!\n'
+ending2 = '\nUnfortunately, you have run out of moves!\n'
+ending3 = '\nYou discovered a special ending, congratulations!\n'
+ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
+ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
+copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
+                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
+helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
+               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world '
+               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n'
+               'or this help command, but you figured that one out, go you!')
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
@@ -86,7 +101,7 @@ class Player:
         else:
             print('In your inventory you have:')
             for i in self.inventory:
-                print('-' + '\t' + str(i))
+                print('-\t' + str(i))
 
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
@@ -110,7 +125,7 @@ class Player:
                 item = map.map[self.rowLocation][self.colLocation].items
                 print('You have found:')
                 for i in item:
-                    print('\t'+i)
+                    print('-\t'+str(i))
                 map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
@@ -361,6 +376,13 @@ class game:
             else:
                 cprint(
                     'Maybe you could enter the cave, if you had the right equipment...', 'yellow')
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Abandoned Hut':
+            if 'radio' in player.inventory:
+                cprint('You hear something coming towards you. You should barricade yourself inside and try to use the radio.',
+                       'yellow')
+            else:
+                cprint(
+                    'The hut appears to have electricity, maybe you could hook something up to it.', 'yellow')
         if map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             if 'armour' not in player.inventory:
                 self.specialEnding(player, map)
@@ -424,7 +446,12 @@ class game:
             else:
                 print(parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
         elif parseCommand[0] in specialCommands:
-            game.specialEnding(player, map)
+            if parseCommand[0] == 'use':
+                if len(parseCommand) > 1 and parseCommand[1] == 'radio':
+                    game.specialEnding(self, player, map)
+                else:
+                    cprint('You need to use something!', 'red')
+            game.specialEnding(self, player, map)
         elif parseCommand[0] == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
@@ -485,7 +512,7 @@ class game:
         while 1:
             locationFlag = self.getCommand(player, input(
                 '\n' + 'What would you like to do?: '), gameMap)
-            game.checkSpecialLocation(player, gameMap)
+            game.checkSpecialLocation(self, player, gameMap)
             if locationFlag == 'long':
                 pass
             count = gameMap.checkVisited()
