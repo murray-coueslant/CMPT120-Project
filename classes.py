@@ -41,6 +41,8 @@ helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnort
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
+
+
 class Player:
     # initialising the variables which store the essential data for the player object
     def __init__(self, name, rowLocation, colLocation, map, score=0):
@@ -126,7 +128,7 @@ class Player:
                 item = map.map[self.rowLocation][self.colLocation].items
                 print('You have found:')
                 for i in item:
-                    print('-\t'+str(i))
+                    print('-\t' + str(i))
                 map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
@@ -175,7 +177,7 @@ class Player:
 
     def getScore(self):
         return self.score
-    
+
     def increaseScore(self):
         self.score += 5
 
@@ -187,8 +189,10 @@ class Player:
                 str(self.getScore())), 'blue')
 
 # locale class greatly simplifies accessing the different pieces of data required at each location
+
+
 class Locale:
-    def __init__(self, longDescription, shortDescription, items = [], visited = False, searched = False):
+    def __init__(self, longDescription, shortDescription, items=[], visited=False, searched=False):
         self.longDescription = longDescription
         self.shortDescription = shortDescription
         self.visited = visited
@@ -197,6 +201,7 @@ class Locale:
 
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
+
 
 class map:
     def __init__(self, rowSize, colSize, locations, shortLocations, items):
@@ -224,16 +229,17 @@ class map:
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
                     if self.shortLocations[i] == 'Fallen Tree':
-                        self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i])
+                        self.map[randRow][randCol] = Locale(
+                            self.locations[i], self.shortLocations[i])
                         placed = True
                     else:
                         self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i],
-                                                     [items[itemList[itemCounter]]])
+                                                            [items[itemList[itemCounter]]])
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
                     self.map[randRow][randCol] = Locale(self.locations[i],
-                                                  self.shortLocations[i])
+                                                        self.shortLocations[i])
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -246,7 +252,7 @@ class map:
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
                     self.map[i][j] = Locale('an empty place.',
-                                      'nowhere', [], 'Flag')
+                                            'nowhere', [], 'Flag')
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -285,8 +291,10 @@ class map:
                 if len(map[i][j].shortDescription) == maxLen:
                     whitespace = ''
                 else:
-                    whitespace = (maxLen - len(map[i][j].shortDescription)) * ' '
-                spacedLocations[i][j] = str(map[i][j].shortDescription) + str(whitespace)
+                    whitespace = (
+                        maxLen - len(map[i][j].shortDescription)) * ' '
+                spacedLocations[i][j] = str(
+                    map[i][j].shortDescription) + str(whitespace)
         return spacedLocations, maxLen
 
     # prints a single row of the game map, along with the correct separators for the map layout
@@ -348,6 +356,8 @@ class map:
         return self.map
 
 # game class, the game class contains any of the methods which pertain to the general running of the game
+
+
 class game:
 
     # a versatile error display function which can be expanded with many possible errors using error codes, prints
@@ -432,7 +442,8 @@ class game:
                 elif parseCommand[1] in westCommands:
                     player.movePlayer('west', map)
             else:
-                print(parseCommand[0], 'must be paired with a direction. Try entering a direction.')
+                print(
+                    parseCommand[0], 'must be paired with a direction. Try entering a direction.')
         elif parseCommand[0] in helpCommands:
             self.displayHelp()
         elif parseCommand[0] in mapCommands:
@@ -455,12 +466,14 @@ class game:
             if len(parseCommand) > 1:
                 player.takeItem(map, parseCommand[1])
             else:
-                print(parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
+                print(
+                    parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
         elif parseCommand[0] in dropCommands:
             if len(parseCommand) > 1:
                 player.dropItem(map, parseCommand[1])
             else:
-                print(parseCommand[0], 'must be paired with an item. Enter the item you want to drop.')
+                print(
+                    parseCommand[0], 'must be paired with an item. Enter the item you want to drop.')
         elif parseCommand[0] in specialCommands:
             if parseCommand[0] == 'use':
                 if len(parseCommand) > 1 and parseCommand[1] == 'radio':
