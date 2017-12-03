@@ -176,9 +176,9 @@ class Player:
         if map.map[self.rowLocation][self.colLocation].searched is False:
             if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
                 item = map.map[self.rowLocation][self.colLocation].items
-                print(item)
-                print('You have found:\n')
-                print('\t'+str(item))
+                print('You have found:')
+                for i in item:
+                    print('\t'+i)
                 map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
@@ -189,20 +189,16 @@ class Player:
     # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
     # it will inform them that it has already been taken
     def takeItem(self, map, item):
-        pass
-        # if map.map[self.rowLocation][self.colLocation].searched is False:
-        #     print('You can\'t take something you haven\'t looked for!')
-        # else:
-        #     if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
-        #         item = map.map[self.rowLocation][self.colLocation].items
-        #         if item[1] is False:
-        #             self.inventory.append(item[0])
-        #             print('You have picked up:', item[0])
-        #             item[1] = True
-        #         else:
-        #             print("You have already picked up the", item[0])
-        #     else:
-        #         cprint('Nothing to take!', 'red')
+        if map.map[self.rowLocation][self.colLocation].searched is False:
+            print('You can\'t take something you haven\'t looked for!')
+        else:
+            items = map.map[self.rowLocation][self.colLocation].items
+            if item in items:
+                self.inventory.append(item)
+                items.remove(item)
+                print('You have picked up:', item)
+            else:
+                print('No', item, 'here!')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -274,7 +270,7 @@ class map:
                         placed = True
                     else:
                         self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i],
-                                                     items[itemList[itemCounter]])
+                                                     [items[itemList[itemCounter]]])
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
