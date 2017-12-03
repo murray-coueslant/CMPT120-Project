@@ -63,6 +63,8 @@ for i in range(0, len(itemNames)):
 player = Player(input('Enter your name: '))
 gameWorld = World(locations, 5, 5, items, player)
 
-
+while 1:
+    player.getCommand(input('Enter a command: '), gameWorld)
+    print(player.currentX, player.currentY)
 
 

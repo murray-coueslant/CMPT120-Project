@@ -13,6 +13,45 @@ class Player:
         self.currentY = currentY
         self.moveCount = moveCount
         self.inventory = inventory
+        self.movementCommands = ['go', 'move', 'travel']
+        self.northCommands = ['n', 'north']
+        self.eastCommands = ['e', 'east']
+        self.southCommands = ['s', 'south']
+        self.westCommands = ['w', 'west']
+        self.helpCommands = ['h', 'help']
+        self.mapCommands = ['m', 'map', 'world', 'show']
+        self.scoreCommands = ['score', 'points', 'total']
+        self.yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
+        self.noCommands = ['n', 'no', 'nope', 'nah']
+        self.quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
+        self.lookCommands = ['look', 'view', 'explore']
+        self.searchCommands = ['search', 'examine']
+        self.inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
+        self.takeCommands = ['take', 'grab', 'pick', 'hold']
+        self.specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+
+    def getCommand(self, command, map):
+        command.split(' ')
+        if command[0] in self.movementCommands:
+            if command[1] in self.northCommands:
+                self.movePlayer('n', map)
+            elif command[1] in self.eastCommands:
+                self.movePlayer('e', map)
+            elif command[1] in self.southCommands:
+                self.movePlayer('s', map)
+            elif command[1] in self.westCommands:
+                self.movePlayer('w', map)
+        elif command[0] in self.northCommands:
+            self.movePlayer('n', map)
+        elif command[0] in self.eastCommands:
+            self.movePlayer('e', map)
+        elif command[0] in self.southCommands:
+            self.movePlayer('s', map)
+        elif command[0] in self.westCommands:
+            self.movePlayer('w', map)
+        elif command[0] in takeCommands:
+            pass
+
 
     def getName(self):
         return self.name
@@ -21,7 +60,7 @@ class Player:
         if direction == 'n':
             self.currentY -= 1
             if self.currentY < 0:
-                print(self.name, 'you have reached the north edge of the island. Try another move.')
+                print(self.name, 'you have reached the northern edge of the island. Try another move.')
                 self.currentY += 1
         elif direction == 'e':
             self.currentX += 1
@@ -29,9 +68,15 @@ class Player:
                 print(self.name, 'you have reached the eastern edge of the island. Try another move.')
                 self.currentX -= 1
         elif direction == 's':
-            self.currentY +=1:
+            self.currentY +=1
             if self.currentY > map.rows:
                 print(self.name, 'you have reached the southern edge of the island. Try another move.')
+                self.currentY -= 1
+        else:
+            self.currentX -= 1
+            if self.currentX < 0:
+                print(self.name, 'you have reached the western edge of the island. Try another move.')
+                self.currentX += 1
 
     def increaseMoves(self):
         self.moveCount += 1
