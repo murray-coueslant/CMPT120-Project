@@ -1,239 +1,143 @@
-from random import randint, shuffle
-class Item:
-    def __init__(self, name, ID, used = False):
-        self.name = str(name)
-        self.used = used
-        self.ID = int(ID)
-
 class Player:
-    def __init__(self, name, score = 0, currentX = 0, currentY = 0, moveCount = 0, inventory = []):
-        self.name = str(name)
+    # initialising the variables which store the essential data for the player object
+    def __init__(self, name, rowLocation, colLocation, map, score=0):
+        self.name = name
         self.score = score
-        self.currentX = currentX
-        self.currentY = currentY
-        self.moveCount = moveCount
-        self.inventory = inventory
-        self.movementCommands = ['go', 'move', 'travel']
-        self.northCommands = ['n', 'north']
-        self.eastCommands = ['e', 'east']
-        self.southCommands = ['s', 'south']
-        self.westCommands = ['w', 'west']
-        self.helpCommands = ['h', 'help']
-        self.mapCommands = ['m', 'map', 'world', 'show']
-        self.scoreCommands = ['score', 'points', 'total']
-        self.yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
-        self.noCommands = ['n', 'no', 'nope', 'nah']
-        self.quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
-        self.lookCommands = ['look', 'view', 'explore']
-        self.searchCommands = ['search', 'examine']
-        self.inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
-        self.takeCommands = ['take', 'grab', 'pick', 'hold']
-        self.specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+        self.rowLocation = rowLocation
+        self.colLocation = colLocation
+        self.moves = 0
+        self.maxMoves = 0
+        self.inventory = []
+        self.map = map
+    # this method is used to change the location of the player within the world map, it takes a direction in the form
+    # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
+    # once decided it modifies the current location of the player in the correct way for the desired direction
 
-    def getCommand(self, inCommand, map):
-        command = inCommand.split(' ')
-        if command[0] in self.movementCommands:
-            if len(command) == 2:
-                if command[1] in self.northCommands:
-                    self.movePlayer('n', map)
-                elif command[1] in self.eastCommands:
-                    self.movePlayer('e', map)
-                elif command[1] in self.southCommands:
-                    self.movePlayer('s', map)
-                elif command[1] in self.westCommands:
-                    self.movePlayer('w', map)
+    def movePlayer(self, direction, map):
+        if direction.lower() == 'north':
+            self.rowLocation -= 1
+            if self.rowLocation < 0:
+                game.displayError(2, self)
+                self.rowLocation += 1
             else:
-                print(command[0], 'must be paired with a direction. Enter a direction.')
-        elif command[0] in self.northCommands:
-            self.movePlayer('n', map)
-        elif command[0] in self.eastCommands:
-            self.movePlayer('e', map)
-        elif command[0] in self.southCommands:
-            self.movePlayer('s', map)
-        elif command[0] in self.westCommands:
-            self.movePlayer('w', map)
-        elif command[0] in self.takeCommands:
-            pass
-
+                map.visitLocation(self, map)
+                self.increaseMoves()
+        elif direction.lower() == 'south':
+            self.rowLocation += 1
+            if self.rowLocation > (map.rowSize - 1):
+                game.displayError(2, self)
+                self.rowLocation -= 1
+            else:
+                map.visitLocation(self, map)
+                self.increaseMoves()
+        elif direction.lower() == 'east':
+            self.colLocation += 1
+            if self.colLocation > (map.colSize - 1):
+                game.displayError(2, self)
+                self.colLocation -= 1
+            else:
+                map.visitLocation(self, map)
+                self.increaseMoves()
+        elif direction.lower() == 'west':
+            self.colLocation -= 1
+            if self.colLocation < 0:
+                game.displayError(2, self)
+                self.colLocation += 1
+            else:
+                map.visitLocation(self, map)
+                self.increaseMoves()
+        else:
+            game.displayError(1, self)
 
     def getName(self):
         return self.name
 
-    def movePlayer(self, direction, map):
-        if direction == 'n':
-            self.currentY -= 1
-            if self.currentY < 0:
-                print(self.name, 'you have reached the northern edge of the island. Try another move.')
-                self.currentY += 1
-        elif direction == 'e':
-            self.currentX += 1
-            if self.currentX > map.cols:
-                print(self.name, 'you have reached the eastern edge of the island. Try another move.')
-                self.currentX -= 1
-        elif direction == 's':
-            self.currentY +=1
-            if self.currentY > map.rows:
-                print(self.name, 'you have reached the southern edge of the island. Try another move.')
-                self.currentY -= 1
+    # outputs a formatted list of the items which the player has in their inventory currently
+    def getInventory(self):
+        if len(self.inventory) == 0:
+            print('You\'re not carrying anything!')
         else:
-            self.currentX -= 1
-            if self.currentX < 0:
-                print(self.name, 'you have reached the western edge of the island. Try another move.')
-                self.currentX += 1
+            print('In your inventory you have:')
+            for i in self.inventory:
+                print('-' + '\t' + str(i))
+
+    # the getLocation method is what displays the current location of the character to the user. It has two different
+    # messages depending on whether or not there is a special location at the player's current position
+    def getLocation(self, map):
+        if map.getLocation(self) == 'an empty place.':
+            print(self.name, 'finds nothing, you should keep exploring.')
+        else:
+            print(self.name, 'is currently at', map.getLocation(self))
+
+    # get long location outputs the long description of a location to the player
+    def getLongLocation(self, map):
+        if map.getLocation(self) == 'an empty place.':
+            print(self.name, 'finds nothing, you should keep exploring.')
+        else:
+            print(self.name, 'is currently at', map.getLongLocation(self))
+
+    # itemSearch looks in the player's current position to see if there is a retrievable item for the player there
+    def itemSearch(self, map):
+        if map.map[self.rowLocation][self.colLocation].searched is False:
+            if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
+                item = map.map[self.rowLocation][self.colLocation].items
+                print('You have found:')
+                for i in item:
+                    print('\t'+i)
+                map.map[self.rowLocation][self.colLocation].searched = True
+            else:
+                print('No items here!')
+                map.map[self.rowLocation][self.colLocation].searched = True
+        else:
+            print('You have already searched here!')
+
+    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
+    # it will inform them that it has already been taken
+    def takeItem(self, map, item):
+        if map.map[self.rowLocation][self.colLocation].searched is False:
+            print('You can\'t take something you haven\'t looked for!')
+        else:
+            items = map.map[self.rowLocation][self.colLocation].items
+            if item in items:
+                self.inventory.append(item)
+                items.remove(item)
+                print('You have picked up:', item)
+            else:
+                print('No', item, 'here!')
+
+    # this method checks to see if the player has used up all of their available moves for the current game
+    def checkMoves(self):
+        if self.moves >= self.maxMoves:
+            cprint('You have run out of moves, try again!', 'red')
+            game.endGame(2)
+        else:
+            cprint('You have ' + str(self.maxMoves - self.moves) +
+                   ' moves remaining, use them wisely!', 'blue')
+
+    def getXPos(self):
+        return self.colLocation
+
+    def getYPos(self):
+        return self.rowLocation
+
+    def getScore(self):
+        return self.score
+    
+    def increaseScore(self):
+        self.score += 5
 
     def increaseMoves(self):
-        self.moveCount += 1
+        self.moves += 1
 
+    def displayScore(self):
+        cprint((self.getName() + ', ' + 'your score is: ' +
+                str(self.getScore())), 'blue')
 
+# locale class greatly simplifies accessing the different pieces of data required at each location
 class Locale:
-    def __init__(self, longDescription, shortDescription, visited = False, searched = False, itemList = None):
+    def __init__(self, longDescription, shortDescription, items = [], visited = False, searched = False):
         self.longDescription = longDescription
         self.shortDescription = shortDescription
         self.visited = visited
+        self.items = items
         self.searched = searched
-        self.itemList = itemList
-    
-    def visit(self):
-        self.visited = True
-
-    def search(self):
-        if self.searched == False:
-            self.searched = True
-            if len(itemList) > 0:
-                print('You have found: \n')
-                for i in range(0, len(itemList)):
-                    print('\t' + str(itemList[i]))
-        else:
-            print('You already looked here!')
-        
-    def longDescription(self):
-        return self.longDescription
-
-class World:
-    def __init__(self, locationList, cols, rows, itemList, player):
-        self.locationList = locationList
-        self.player = player
-        self.itemList = itemList
-        self.cols = cols
-        self.rows = rows
-        self.worldMap = [ [None for cols in range(self.cols)] for rows in range(self.rows) ]
-        self.emptyLocale = Locale('an empty place.', 'nowhere')
-        self.placeLocations()
-        self.fillEmpty()
-        self.placeItems(self.itemList)
-
-    def placeLocations(self):
-        randRow, randCol = self.randomRowCol()
-        orderList = list(range(len(self.locationList)))
-        shuffle(orderList)
-        for i in orderList:
-            placed = False
-            while not placed:
-                if self.worldMap[randRow][randCol] == None:
-                    self.worldMap[randRow][randCol] = self.locationList[i]
-                    placed = True
-                else:
-                    randRow, randCol = self.randomRowCol()
-    
-    def fillEmpty(self):
-        for i in range(self.rows):
-            for j in range(self.cols):
-                if self.worldMap[i][j] == None:
-                    self.setEmpty(i, j)
-
-    def setEmpty(self, rowLocation, colLocation):
-        self.worldMap[rowLocation][colLocation] = self.emptyLocale
-
-    def placeItems(self, itemList):
-        orderList = list(range(len(itemList)))
-        shuffle(orderList)
-        for i in orderList:
-            row, col = self.randomRowCol()
-            placed = False
-            while not placed:
-                location = self.worldMap[row][col]
-                if location.itemList is None:
-                    location.itemList = [itemList[i]]
-                    placed = True
-                else:
-                    row, col = self.randomRowCol()
-        
-    def spawnPlayer(self):
-        row, col = self.randomRowCol()
-        self.player.currentX, self.player.currentY = col, row
-
-    def checkVisited(self):
-        print(self.player.currentX, self.player.currentY)
-        return self.worldMap[self.player.currentY][self.player.currentX].visited
-
-    def visit(self):
-        self.worldMap[self.player.currentY][self.player.currentX].visit()
-
-    def nonVisitedDescription(self):
-        try:
-            return self.worldMap[self.player.currentY][self.player.currentX].longDescription
-        except IndexError:
-            return self.worldMap[self.player.currentY][self.player.currentX].longDescription
-    
-    def visitedDescription(self):
-        return self.worldMap[self.player.currentY][self.player.currentX].shortDescription
-
-    def randomRowCol(self):
-        randRow, randCol = randint(0, (self.rows - 1)), randint(0, (self.cols - 1))
-        return randRow, randCol
-
-    # prints a single row of the game map, along with the correct separators for the map layout
-    def printRow(self, row):
-        output = '|'
-        for val in row:
-            output += str(val) + '|'
-        print(output)
-
-    # this method is used to print a line separator for the map, similar to above it prints a single row in the output
-    def printSeparator(self, length, row):
-        output = '+'
-        dashLength = '-' * length
-        for val in row:
-            output += dashLength + '+'
-        print(output)
-
-    # the main map display method, it fetches the maximum length of an item in the shortened locations list as well as
-    # fetching that list itself. it then uses these things to print the entire map using other functions
-    def displayMap(self):
-        spacedLocations, maxLen = self.getSpacedLocations(self.worldMap)
-        self.printSeparator(maxLen, spacedLocations[0])
-        for row in spacedLocations:
-            self.printRow(row)
-            self.printSeparator(maxLen, row)
-    
-    # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
-    # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
-    def getSpacedLocations(self, map):
-        shortList = []
-        spacedLocations = [[None for cols in range(
-            self.cols)] for rows in range(self.rows)]
-        for i in range(self.rows):
-            for j in range(self.cols):
-                shortList.append(self.worldMap[i][j].shortDescription)
-
-        maxLen = self.getMaxLen(shortList)
-        for i in range(self.rows):
-            for j in range(self.cols):
-                if len(self.worldMap[i][j].shortDescription) == maxLen:
-                    whitespace = ''
-                else:
-                    whitespace = (maxLen - len(self.worldMap[i][j].shortDescription)) * ' '
-                spacedLocations[i][j] = str(self.worldMap[i][j].shortDescription) + str(whitespace)
-        return spacedLocations, maxLen
-
-        # this method uses a findMax algorithm to get the longest element in the shortLocations list in this case. this max
-    # value is used to append the appropriate amount of whitespace to the rest of the location elements
-    def getMaxLen(self, list):
-        maxLen = 0
-        for i in range(0, len(list)):
-            currLen = len(list[i])
-            if currLen > maxLen:
-                maxLen = currLen
-        return maxLen
-
-
