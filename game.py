@@ -88,8 +88,15 @@ easyWords = ['easy', 'e', 'simple']
 mediumWords = ['medium', 'm', 'moderate']
 hardWords = ['hard', 'h', 'complex']
 
+<<<<<<< HEAD
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
+=======
+loc4 = 'at the end of the tracks, what you find makes you step back a few paces. At your feet lies a glowing green ' \
+       'object. What is it? How did it get here? Suddenly, the glowing becomes more and more intense until you can ' \
+       'barely see anymore. Above you, you hear a loud droning noise as a shadow descends over the clearing. You ' \
+       'turn on your heels and run as fast as your legs can muster.'
+>>>>>>> master
 
 
 class Player:
@@ -183,6 +190,7 @@ class Player:
         else:
             print('You have already searched here!')
 
+<<<<<<< HEAD
     # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
     # it will inform them that it has already been taken
     def takeItem(self, map):
@@ -331,6 +339,12 @@ class map:
                     whitespace = (maxLen - len(map[i][j][1])) * ' '
                 spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
         return spacedLocations, maxLen
+=======
+# title display routine
+def displayTitle():
+    cprint(figlet_format('A Text Adventure!', font='big'),
+           'red', attrs=['bold'])
+>>>>>>> master
 
     # prints a single row of the game map, along with the correct separators for the map layout
     def printRow(self, row):
