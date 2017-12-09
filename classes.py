@@ -34,6 +34,7 @@ mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look
                 ('a crashed plane. The hull is rusted and old. There are signs of previous inhabitants here, however it'
                  'does not look like anyone has lived here for a long time.'),
                 ('a deep well. You drop a stone down the structure, but you never hear it land. You wonder where it leads.')]
+
 shortLocations = ['Sandy Beach',
                   'Dense Rain forest',
                   'Open Clearing',
@@ -588,28 +589,28 @@ class game:
         if endingNo == 1:
             cprint(ending1 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec == 'Y':
+            if dec.lower() == 'y':
                 self.newGame()
             else:
                 quit()
         elif endingNo == 2:
             cprint(ending2 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec == 'Y':
+            if dec.lower() == 'y':                
                 self.newGame()
             else:
                 quit()
         elif endingNo == 3:
             cprint(ending3 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec == 'Y':
+            if dec.lower() == 'y':
                 self.newGame()
             else:
                 quit()
         elif endingNo == 4:
             cprint(ending5 + copyrightMessage, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec == 'Y':
+            if dec.lower() == 'y':
                 self.newGame()
             else:
                 quit()
