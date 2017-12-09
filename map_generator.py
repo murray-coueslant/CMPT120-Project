@@ -75,7 +75,7 @@ eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
 southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
 westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
-mapCommands = ['map']
+mapCommands = ['m', 'map', 'world', 'show map', 'view world']
 scoreCommands = ['score', 'points', 'total']
 yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
 noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
@@ -247,7 +247,7 @@ class map:
 
     def getMaxLen(self, list):
         maxLen = 0
-        for i in range(0, len(list)-1):
+        for i in range(0, len(list)):
             currLen = len(list[i])
             if currLen > maxLen:
                 maxLen = currLen

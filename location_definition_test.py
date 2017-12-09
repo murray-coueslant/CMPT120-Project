@@ -29,7 +29,7 @@ def assignLocation(location, map):
     rand_col = randint(0, 2)
     placed = False
     while not placed:
-        if map[rand_row][rand_col] == None:
+        if map[rand_row][rand_col] is None:
             map[rand_row][rand_col] = [location, False]
             placed = True
         else:
@@ -40,7 +40,7 @@ def assignLocation(location, map):
 def fillEmpty(map):
     for j in range(cols):
         for i in range(rows):
-            if map[i][j] == None:
+            if map[i][j] is None:
                 map[i][j] = ['There is nothing here.', False]
 
 
