@@ -18,7 +18,7 @@ loc2 = ('a dense rainforest. The sound of creatures in the bush is overwhelming,
 
 loc2Short = 'Dense Rainforest'
 
-loc3 = ('an open clearing. On the ground in front of you there is a pile of strange stones. You are not sure what '
+loc3 = ('an open clearing. On the ground infront of you there is a pile of strange stones. You are not sure what '
         'they are for. You wonder if there were once people here, and if so, where are they now?')
 
 loc3Short = 'Open Clearing'
@@ -41,48 +41,41 @@ loc6 = ('a decrepit marine dock. The wood of the jetty is rotting away, there is
 
 loc6Short = 'Decrepit Marine Dock'
 
-loc7 = ('an abandoned hut. The side of the hut has strange images painted on it in red paint, and there are no windows'
-        'on any side. The door sits ajar, you pry it open to reveal some more bizarre paintings on the wall as well as'
-        'hundreds of papers on the floor. You decide not to enter any farther into the structure for fear of crazies.')
+loc7 = ('a')
 
-loc7Short = 'Abandoned Hut'
+loc7Short = 'a'
 
-loc8 = ('a little creek. The water rushes by and you see some small fish glimmering in the sunlight. You dip your hands'
-        'into the water and take a drink. The water is cold and fresh, you fill your vessel from the creek and carry'
-        'on ahead.')
+loc8 = ('b')
 
-loc8Short = 'Little Creek'
+loc8Short = 'b'
 
-loc9 = ('a fallen tree. The collosal trunk is hollow after all of the time spent laying on the ground. There are '
-        'clearly animals who call this trunk their home. You decide to move on, you\'d rather not meet any of them.')
+loc9 = ('c')
 
-loc9Short = 'Fallen Tree'
+loc9Short = 'c'
 
 # variable definitions, these are things which are used often like message strings etc... or things which would make
 # code look ugly if used often in their normal form
 
 introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
                 'it is your task to explore your surroundings. Press enter to begin.')
-ending1 = '\nCongratulations, you have explored the whole island!\n'
-ending2 = '\nUnfortunately, you have run out of moves!\n'
-ending3 = 'I hope you enjoyed playing this game. See you soon!\n'
+ending1 = ('\n' + 'Congratulations, you have explored the whole island!' + '\n')
+ending2 = ('I hope you enjoyed playing this game. See you soon!' + '\n')
 copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
-                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
-helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
-               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world\n\t'
-               'points, score or total\nor this help command, but you figured that one out, go you!')
+                    'murray.coueslant1@marist.edu. Fair use is permitted.' + '\n')
+helpMessage = ('Help:' + '\n' + 'Enter a command below, the possible commands are:' + '\n\t' + 'north, south,' +
+               ' east, west' + '\n\t' + 'go, move or travel + a direction' + '\n\t' + 'quit, exit, leave, end'
+               + '\n' + 'or this help command, but you figured that one out, go you!')
 
 # location set definition
-mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9]
-shortLocations = [loc1Short, loc2Short, loc3Short, loc4Short, loc5Short, loc6Short, loc7Short, loc8Short, loc9Short]
-
+mapLocations = [loc1, loc2, loc3, loc4, loc5, loc6]
+shortLocations = [loc1Short, loc2Short, loc3Short, loc4Short, loc5Short, loc6Short]
 # command set definitions
 northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
 eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
 southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
 westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
 helpCommands = ['h', 'help', 'help me', 'get help']
-mapCommands = ['m', 'map', 'world', 'show map', 'view world']
+mapCommands = ['map']
 scoreCommands = ['score', 'points', 'total']
 yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
 noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
@@ -92,16 +85,13 @@ quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
 # controlling
 
 
-
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, rowLocation, colLocation, map, score=0):
+    def __init__(self, name, rowLocation, colLocation, score=0):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
         self.colLocation = colLocation
-        self.moves = 0
-        self.maxMoves = 0
 
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in
@@ -111,11 +101,10 @@ class Player:
         if direction.lower() == 'north':
             self.rowLocation -= 1
             if self.rowLocation < 0:
-                game.displayError(2, self)
+                game.displayError(2,self)
                 self.rowLocation += 1
             else:
                 map.visitLocation(self)
-                self.increaseMoves()
         elif direction.lower() == 'south':
             self.rowLocation += 1
             if self.rowLocation > (map.rowSize - 1):
@@ -123,7 +112,6 @@ class Player:
                 self.rowLocation -= 1
             else:
                 map.visitLocation(self)
-                self.increaseMoves()
         elif direction.lower() == 'east':
             self.colLocation += 1
             if self.colLocation > (map.colSize - 1):
@@ -131,7 +119,6 @@ class Player:
                 self.colLocation -= 1
             else:
                 map.visitLocation(self)
-                self.increaseMoves()
         elif direction.lower() == 'west':
             self.colLocation -= 1
             if self.colLocation < 0:
@@ -139,7 +126,6 @@ class Player:
                 self.colLocation += 1
             else:
                 map.visitLocation(self)
-                self.increaseMoves()
         else:
             game.displayError(1, self)
 
@@ -154,14 +140,6 @@ class Player:
         else:
             print(self.name, 'is currently at', map.getLocation(self))
 
-    # this method checks to see if the player has used up all of their available moves for the current game
-    def checkMoves(self):
-        if self.moves >= self.maxMoves:
-            print('You have run out of moves, try again!')
-            game.endGame(2)
-        else:
-            print('You have', self.maxMoves-self.moves, 'moves remaining, use them wisely!')
-
     def getXPos(self):
         return self.colLocation
 
@@ -174,9 +152,6 @@ class Player:
     def increaseScore(self):
         self.score += 5
 
-    def increaseMoves(self):
-        self.moves += 1
-
     def displayScore(self):
         print(self.getName()+',', 'your score is:', self.getScore())
 
@@ -185,14 +160,15 @@ class Player:
 
 
 class map:
-    def __init__(self, rowSize, colSize, locations, shortLocations):
+    def __init__(self, rowSize, colSize, locations):
         self.rowSize = rowSize
         self.colSize = colSize
         self.locations = locations
         self.shortLocations = shortLocations
         # defines a 2D array of a certain size which is defined when the class is instantiated
         self.map = [[None for cols in range(colSize)] for rows in range(rowSize)]
-        orderList = list(range(len(self.locations)))
+        numberOfLocations = len(self.locations)
+        orderList = list(range(numberOfLocations))
 
         # the program uses the shuffle command from the random library to determine the positions of the six special
         # locations in the map
@@ -219,7 +195,7 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['There is nothing here.', 'X X X', 'Flag']
+                    self.map[i][j] = ['There is nothing here.', 'Nothing here', 'Flag']
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -228,7 +204,7 @@ class map:
         cols, rows = self.getSizes()
         for j in range(cols):
             for i in range(rows):
-                if map[i][j][2] is True:
+                if map[i][j][1] is True:
                     visitedCount += 1
         return visitedCount
 
@@ -244,8 +220,6 @@ class map:
         elif self.getVisited(player) is True:
             print('You have already discovered this location!')
 
-    # this method returns to us a list of the shortened location names, with the appropriate amount of whitespace append
-    # -ed such that all of the locations have the same length. this is required for the display of the map in the game.
     def getSpacedLocations(self, map):
         spacedLocations = [[None for cols in range(self.colSize)] for rows in range(self.rowSize)]
         maxLen = self.getMaxLen(self.shortLocations)
@@ -256,43 +230,14 @@ class map:
                 else:
                     whitespace = (maxLen - len(map[i][j][1])) * ' '
                 spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
-        return spacedLocations, maxLen
+        return spacedLocations
 
-    # prints a single row of the game map, along with the correct separators for the map layout
-    def printRow(self, row):
-        output = '|'
-        for val in row:
-            output += str(val) + '|'
-        print(output)
-
-    # this method is used to print a line separator for the map, similar to above it prints a single row in the output
-    def printSeparator(self, length, row):
-        output = '+'
-        dashLength = '-' * length
-        for val in row:
-            output += dashLength + '+'
-        print(output)
-
-    # the main map display method, it fetches the maximum length of an item in the shortened locations list as well as
-    # fetching that list itself. it then uses these things to print the entire map using other functions
     def displayMap(self):
-        spacedLocations, maxLen = self.getSpacedLocations(self.map)
-        self.printSeparator(maxLen, spacedLocations[0])
-        for row in spacedLocations:
-            self.printRow(row)
-            self.printSeparator(maxLen, row)
+        spacedLocations = self.getSpacedLocations(self.map)
+        tile = '|{}|'
+        for i in range(self.rowSize):
+            print(tile.format(spacedLocations[i][0]), tile.format(spacedLocations[i][1]), tile.format(spacedLocations[i][2]))
 
-    # this method uses a findmax algorithm to get the longest element in the shortLocations list in this case. this max
-    # value is used to append the appropriate amount of whitespace to the rest of the location elements
-    def getMaxLen(self, list):
-        maxLen = 0
-        for i in range(0, len(list)):
-            currLen = len(list[i])
-            if currLen > maxLen:
-                maxLen = currLen
-        return maxLen
-
-    # returns a random row and column for use when it is required
     def randomRowCol(self):
         randRow, randCol = randint(0, (self.rowSize - 1)), randint(0, (self.colSize - 1))
         return randRow, randCol
@@ -300,14 +245,22 @@ class map:
     def getSizes(self):
         return self.colSize, self.rowSize
 
+    def getMaxLen(self, list):
+        maxLen = 0
+        for i in range(0, len(list)-1):
+            currLen = len(list[i])
+            if currLen > maxLen:
+                maxLen = currLen
+        return maxLen
+
     def getLocation(self, player):
         return self.map[player.rowLocation][player.colLocation][0]
 
     def getVisited(self, player):
-        return self.map[player.rowLocation][player.colLocation][2]
+        return self.map[player.rowLocation][player.colLocation][1]
 
     def setVisited(self, player):
-        self.map[player.rowLocation][player.colLocation][2] = True
+        self.map[player.rowLocation][player.colLocation][1] = True
 
     def getMap(self):
         return self.map
@@ -321,7 +274,7 @@ class game:
     @staticmethod
     def displayError(messageNo, player):
         if messageNo == 1:
-            message = 'Incorrect direction command entered, please enter another, ' + player.name + '.'
+            message = 'Incorrect direction command entered, please enter another,', player.name
         elif messageNo == 2:
             message = 'Collision, you cannot move this way. Choose another direction, ' + player.name + '.'
         elif messageNo == 3:
@@ -333,21 +286,6 @@ class game:
     @staticmethod
     def displayHelp():
         print(helpMessage)
-
-    # this method sets the max number of moves a player has which acts as the 'difficulty' in the game
-    def setDifficulty(self, difficulty, player, map):
-        if difficulty.lower() == 'easy':
-            player.maxMoves = 5 * (map.colSize * map.rowSize)
-            return
-        elif difficulty.lower() == 'medium':
-            player.maxMoves = 3 * (map.colSize * map.rowSize)
-            return
-        elif difficulty.lower() == 'hard':
-            player.maxMoves = 2 * (map.colSize * map.rowSize)
-            return
-        else:
-            print('Incorrect difficulty entered, try again.')
-            self.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), player, map)
 
     # the getCommand method is the place where the user input is parsed and the correct action performed depending on
     # the command entered
@@ -376,8 +314,6 @@ class game:
             self.getCommand(player, input('Enter new command: '), map)
 
     # this method is the main game loop which is called at the start of the game and runs until the end of the process
-    # it handles getting the command from the user, checking to see if the player has visited all of the locations as
-    # well as checking the amount of moves the player has completed
     def gameLoop(self, player, gameMap):
         player.getLocation(gameMap)
         gameMap.visitLocation(player)
@@ -393,22 +329,17 @@ class game:
                         endFlag = True
                         print('Enter a quit command to leave the game once you are done exploring!')
                     elif decision.lower() in noCommands:
-                        self.endGame(1)
-            player.checkMoves()
+                        self.endGame()
 
     @staticmethod
-    def endGame(endingNo):
-        if endingNo == 1:
-            print(ending1 + copyrightMessage + ending3)
-            quit()
-        elif endingNo == 2:
-            print(ending2 + copyrightMessage + ending3)
-            quit()
+    def endGame():
+        print(ending1 + copyrightMessage + ending2)
+        quit()
 
 
 # class instantiations, defines the size of the map and the locations to place in it
 game = game()
-gameMap = map(4, 4, mapLocations, shortLocations)
+gameMap = map(3, 3, mapLocations)
 
 
 # title display routine
@@ -420,10 +351,8 @@ def displayTitle():
 def startGame():
     displayTitle()
     input(introduction)
-    randomRow, randomColumn = gameMap.randomRowCol()
-    character = Player(input('Enter the name of your character: '), randomRow,
-                       randomColumn, gameMap)
-    game.setDifficulty(input('What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
+    character = Player(input('Enter the name of your character: '), int(gameMap.rowSize / 2),
+                       int(gameMap.colSize / 2))
     game.gameLoop(character, gameMap)
 
 
