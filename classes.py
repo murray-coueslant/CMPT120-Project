@@ -1,26 +1,6 @@
-# a more complex text adventure game, with a randomly generated map and player control
-# Written by: Murray Coueslant, Date: 2017/11/12
-
 from pyfiglet import figlet_format
 from termcolor import cprint
 from random import shuffle, randint
-
-# variable definitions, these are things which are used often like message strings etc... or things which would make
-# code look ugly if used often in their normal form
-
-introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
-                'it is your task to explore your surroundings. Press enter to begin.')
-ending1 = '\nCongratulations, you have explored the whole island!\n'
-ending2 = '\nUnfortunately, you have run out of moves!\n'
-ending3 = '\nYou discovered a special ending, congratulations!\n'
-ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
-ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
-copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
-                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
-helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tnorth, south, '
-               'east, west\n\tgo, move or travel + a direction\n\tquit, exit, leave, end\n\tmap, world, view world '
-               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n'
-               'or this help command, but you figured that one out, go you!')
 
 # location set definition
 mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
@@ -50,7 +30,11 @@ mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look
                  'There are clearly animals who call this trunk their home. You decide to move on, you\'d rather not '
                  'meet any of them.'),
                 ('a huge totem. There are bizarre symbols carved into the sculpture. Maybe you will return to figure '
-                 'out what they mean.')]
+                 'out what they mean.'),
+                ('a crashed plane. The hull is rusted and old. There are signs of previous inhabitants here, however it'
+                 'does not look like anyone has lived here for a long time.'),
+                ('a deep well. You drop a stone down the structure, but you never hear it land. You wonder where it leads.')]
+
 shortLocations = ['Sandy Beach',
                   'Dense Rain forest',
                   'Open Clearing',
@@ -60,49 +44,72 @@ shortLocations = ['Sandy Beach',
                   'Abandoned Hut',
                   'Little Creek',
                   'Fallen Tree',
-                  'Huge Totem']
+                  'Huge Totem',
+                  'Crashed Plane',
+                  'Deep Well']
 
 # item set definition
 items = ['map',
          'rope',
          'armour',
-         'sword']
-
+         'sword',
+         'radio',
+         'pickaxe']
 # command set definitions
-northCommands = ['n', 'north', 'go north', 'move north', 'travel north']
-eastCommands = ['e', 'east', 'go east', 'move east', 'travel east']
-southCommands = ['s', 'south', 'go south', 'move south', 'travel south']
-westCommands = ['w', 'west', 'go west', 'move west', 'travel west']
-helpCommands = ['h', 'help', 'help me', 'get help']
-mapCommands = ['m', 'map', 'world', 'show map', 'view world']
+movementCommands = ['go', 'move', 'travel']
+northCommands = ['n', 'north']
+eastCommands = ['e', 'east']
+southCommands = ['s', 'south']
+westCommands = ['w', 'west']
+helpCommands = ['h', 'help']
+mapCommands = ['m', 'map', 'world']
 scoreCommands = ['score', 'points', 'total']
 yesCommands = ['y', 'yes', 'yep', 'yeah', 'okay', 'please']
-noCommands = ['n', 'no', 'nope', 'nah', 'no thanks']
+noCommands = ['n', 'no', 'nope', 'nah']
 quitCommands = ['q', 'quit', 'exit', 'end', 'leave']
-lookCommands = ['look', 'look around', 'view', 'explore']
-searchCommands = ['search', 'search area', 'search location', 'examine']
+lookCommands = ['look', 'view', 'explore']
+searchCommands = ['search', 'examine']
 inventoryCommands = ['inventory', 'bag', 'things', 'stuff', 'possessions']
-takeCommands = ['take', 'grab', 'pick up', 'pick', 'hold']
-specialCommands = ['climb', 'scale', 'enter', 'spelunk']
+takeCommands = ['take', 'grab', 'pick', 'hold']
+dropCommands = ['drop', 'discard', 'remove']
+specialCommands = ['climb', 'scale', 'enter', 'spelunk', 'use', 'radio']
 easyWords = ['easy', 'e', 'simple']
 mediumWords = ['medium', 'm', 'moderate']
 hardWords = ['hard', 'h', 'complex']
+
+# variable definitions, these are things which are used often like message strings etc... or things which would make
+# code look ugly if used often in their normal form
+
+introduction = ('Welcome to a text adventure game. You are a lonely wanderer who has woken up on an island, '
+                'it is your task to explore your surroundings. Press enter to begin.')
+ending1 = '\nCongratulations, you have explored the whole island!\n'
+ending2 = '\nUnfortunately, you have run out of moves!\n'
+ending3 = '\nYou discovered a special ending, congratulations!\n'
+ending4 = 'I hope you enjoyed playing this game. See you soon!\n'
+ending5 = '\nSuccessfully quitting game, thank you for playing.\n'
+copyrightMessage = ('This game is property of Murray Coueslant. Any enquiries can be sent to '
+                    'murray.coueslant1@marist.edu. Fair use is permitted.\n')
+helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, move or travel + a direction'
+               '\n\tquit, exit, leave, end\n\tmap, world, view '
+               '(only once you find the map!)\n\tpoints, score or total\n\tlook, explore\n\tsearch, examine\n\t'
+               'take or drop + item\n\tuse + item \n'
+               'or this help command, but you figured that one out, go you!')
 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
 
 
-
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, rowLocation, colLocation, map, score=0):
+    def __init__(self, name, rowLocation, colLocation, map, score=0, currentLocale = ''):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
         self.colLocation = colLocation
+        self.currentLocale = currentLocale
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = []
+        self.inventory = ['map', 'rope']
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -115,6 +122,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation += 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'south':
@@ -123,6 +131,7 @@ class Player:
                 game.displayError(2, self)
                 self.rowLocation -= 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'east':
@@ -131,6 +140,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation -= 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         elif direction.lower() == 'west':
@@ -139,6 +149,7 @@ class Player:
                 game.displayError(2, self)
                 self.colLocation += 1
             else:
+                self.currentLocale = map.map[self.rowLocation][self.colLocation].shortDescription
                 map.visitLocation(self, map)
                 self.increaseMoves()
         else:
@@ -154,7 +165,7 @@ class Player:
         else:
             print('In your inventory you have:')
             for i in self.inventory:
-                print('-' + '\t' + str(i))
+                print('-\t' + str(i))
 
     # the getLocation method is what displays the current location of the character to the user. It has two different
     # messages depending on whether or not there is a special location at the player's current position
@@ -173,33 +184,40 @@ class Player:
 
     # itemSearch looks in the player's current position to see if there is a retrievable item for the player there
     def itemSearch(self, map):
-        if map.map[self.rowLocation][self.colLocation][4] is False:
-            if map.map[self.rowLocation][self.colLocation][3] is not None:
-                item = map.map[self.rowLocation][self.colLocation][3]
-                print('You have found:', item[0])
-                map.map[self.rowLocation][self.colLocation][4] = True
+        if map.map[self.rowLocation][self.colLocation].searched is False:
+            if len(map.map[self.rowLocation][self.colLocation].items) is not 0:
+                item = map.map[self.rowLocation][self.colLocation].items
+                print('You have found:')
+                for i in item:
+                    print('-\t' + str(i))
+                map.map[self.rowLocation][self.colLocation].searched = True
             else:
                 print('No items here!')
-                map.map[self.rowLocation][self.colLocation][4] = True
+                map.map[self.rowLocation][self.colLocation].searched = True
         else:
             print('You have already searched here!')
 
-    # takeItem adds the item to the player's inventory and marks it as taken, if a player attempts to take it again
-    # it will inform them that it has already been taken
-    def takeItem(self, map):
-        if map.map[self.rowLocation][self.colLocation][4] is False:
+    # takeItem adds the item to the player's inventory and removes it from the location it was found in
+    def takeItem(self, map, item):
+        if map.map[self.rowLocation][self.colLocation].searched is False:
             print('You can\'t take something you haven\'t looked for!')
         else:
-            if map.map[self.rowLocation][self.colLocation][3] is not None:
-                item = map.map[self.rowLocation][self.colLocation][3]
-                if item[1] is False:
-                    self.inventory.append(item[0])
-                    print('You have picked up:', item[0])
-                    item[1] = True
-                else:
-                    print("You have already picked up the", item[0])
+            items = map.map[self.rowLocation][self.colLocation].items
+            if item in items:
+                self.inventory.append(item)
+                items.remove(item)
+                print('You have picked up:', item)
             else:
-                cprint('Nothing to take!', 'red')
+                print('No', item, 'here!')
+
+    # dropItem removes the item from the player's inventory and returns it to the current location
+    def dropItem(self, map, item):
+        if item in self.inventory:
+            print('You have dropped:', str(item))
+            map.map[self.rowLocation][self.colLocation].items.append(item)
+            self.inventory.remove(item)
+        else:
+            cprint('You can\'t drop something you don\'t have', 'red')
 
     # this method checks to see if the player has used up all of their available moves for the current game
     def checkMoves(self):
@@ -218,7 +236,7 @@ class Player:
 
     def getScore(self):
         return self.score
-    
+
     def increaseScore(self):
         self.score += 5
 
@@ -229,17 +247,18 @@ class Player:
         cprint((self.getName() + ', ' + 'your score is: ' +
                 str(self.getScore())), 'blue')
 
+# locale class greatly simplifies accessing the different pieces of data required at each location
+class Locale:
+    def __init__(self, longDescription, shortDescription, items=[], visited=False, searched=False):
+        self.longDescription = longDescription
+        self.shortDescription = shortDescription
+        self.visited = visited
+        self.items = items
+        self.searched = searched
 
-# class Locale:
-#     def __init__(self, longDescription, shortDescription, visited, items, searched):
-#         self.longDescription = longDescription
-#         self.shortDescription = shortDescription
-#         self.visited = visited
-#         self.items = items
-#         self.searched = searched
-        
 # map class definition, the map class contains the required variables and methods pertaining to the world map for the
 # game. the methods encompass things such as filling the map with locations on startup etc...
+
 
 class map:
     def __init__(self, rowSize, colSize, locations, shortLocations, items):
@@ -267,17 +286,17 @@ class map:
             while not placed:
                 if self.map[randRow][randCol] is None and itemCounter < 4:
                     if self.shortLocations[i] == 'Fallen Tree':
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False, [None, True],
-                                                      False]
+                        self.map[randRow][randCol] = Locale(
+                            self.locations[i], self.shortLocations[i])
                         placed = True
                     else:
-                        self.map[randRow][randCol] = [self.locations[i], self.shortLocations[i], False,
-                                                      [items[itemList[itemCounter]], False], False]
+                        self.map[randRow][randCol] = Locale(self.locations[i], self.shortLocations[i],
+                                                            [items[itemList[itemCounter]]])
                         itemCounter += 1
                         placed = True
                 elif self.map[randRow][randCol] is None:
-                    self.map[randRow][randCol] = [self.locations[i],
-                                                  self.shortLocations[i], False, None, False]
+                    self.map[randRow][randCol] = Locale(self.locations[i],
+                                                        self.shortLocations[i])
                     placed = True
                 else:
                     randRow, randCol = self.randomRowCol()
@@ -289,8 +308,8 @@ class map:
         for j in range(self.colSize):
             for i in range(self.rowSize):
                 if self.map[i][j] is None:
-                    self.map[i][j] = ['an empty place.',
-                                      'nowhere', 'Flag', None, False]
+                    self.map[i][j] = Locale('an empty place.',
+                                            'nowhere', [], 'Flag')
 
     # counts all of the locations in the map which the player has already visited so far during the game
     def checkVisited(self):
@@ -299,7 +318,7 @@ class map:
         cols, rows = self.getSizes()
         for j in range(cols):
             for i in range(rows):
-                if map[i][j][2] is True:
+                if map[i][j].visited is True:
                     visitedCount += 1
         return visitedCount
 
@@ -326,11 +345,13 @@ class map:
         maxLen = self.getMaxLen(self.shortLocations)
         for i in range(self.rowSize):
             for j in range(self.colSize):
-                if len(map[i][j][1]) == maxLen:
+                if len(map[i][j].shortDescription) == maxLen:
                     whitespace = ''
                 else:
-                    whitespace = (maxLen - len(map[i][j][1])) * ' '
-                spacedLocations[i][j] = str(map[i][j][1]) + str(whitespace)
+                    whitespace = (
+                        maxLen - len(map[i][j].shortDescription)) * ' '
+                spacedLocations[i][j] = str(
+                    map[i][j].shortDescription) + str(whitespace)
         return spacedLocations, maxLen
 
     # prints a single row of the game map, along with the correct separators for the map layout
@@ -377,24 +398,30 @@ class map:
         return self.colSize, self.rowSize
 
     def getLocation(self, player):
-        return self.map[player.rowLocation][player.colLocation][1]
+        return self.map[player.rowLocation][player.colLocation].shortDescription
 
     def getLongLocation(self, player):
-        return self.map[player.rowLocation][player.colLocation][0]
+        return self.map[player.rowLocation][player.colLocation].longDescription
 
     def getVisited(self, player):
-        return self.map[player.rowLocation][player.colLocation][2]
+        return self.map[player.rowLocation][player.colLocation].visited
 
     def setVisited(self, player):
-        self.map[player.rowLocation][player.colLocation][2] = True
+        self.map[player.rowLocation][player.colLocation].visited = True
 
     def getMap(self):
         return self.map
 
-
 # game class, the game class contains any of the methods which pertain to the general running of the game
+
+
 class game:
 
+    # title display routine
+    @staticmethod
+    def displayTitle():
+        cprint(figlet_format('A Huge Text Adventure!',
+                            font='larry3d'), 'red', attrs=['bold'])
     # a versatile error display function which can be expanded with many possible errors using error codes, prints
     # predefined error messages
     @staticmethod
@@ -418,21 +445,28 @@ class game:
     # has a special ending. If the correct items for the ending are in the player's inventory, a message is shown, if
     # not nothing is shown to the player until they have the correct items
     def checkSpecialLocation(self, player, map):
-        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall':
             if 'rope' in player.inventory:
                 cprint('You have something in your possession which might help you here. Try climbing the falls.',
                        'yellow')
             else:
                 cprint(
                     'Perhaps if you had a rope or a safety net, you could climb these falls...', 'yellow')
-        if map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front':
             if 'armour' in player.inventory and 'sword' in player.inventory:
                 cprint(
                     'You are well equipped for exploring, try entering the cave.', 'yellow')
             else:
                 cprint(
                     'Maybe you could enter the cave, if you had the right equipment...', 'yellow')
-        if map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Abandoned Hut':
+            if 'radio' in player.inventory:
+                cprint('You hear something coming towards you. You should barricade yourself inside and try to use the radio.',
+                       'yellow')
+            else:
+                cprint(
+                    'The hut appears to have electricity, maybe you could hook something up to it.', 'yellow')
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             if 'armour' not in player.inventory:
                 self.specialEnding(player, map)
 
@@ -457,38 +491,60 @@ class game:
     # TODO: this whole function is super long and convoluted, i'm sure there is an easier way to parse commands from the
     # TODO: user and condense this whole code
     def getCommand(self, player, command, map):
-        command = command.strip().lower()
-        if command in northCommands:
-            player.movePlayer('north', map)
-        elif command in eastCommands:
-            player.movePlayer('east', map)
-        elif command in southCommands:
-            player.movePlayer('south', map)
-        elif command in westCommands:
-            player.movePlayer('west', map)
-        elif command in helpCommands:
+        inCommand = command.strip().lower()
+        parseCommand = inCommand.split(' ')
+        if parseCommand[0] in movementCommands:
+            if len(parseCommand) > 1:
+                if parseCommand[1] in northCommands:
+                    player.movePlayer('north', map)
+                elif parseCommand[1] in eastCommands:
+                    player.movePlayer('east', map)
+                elif parseCommand[1] in southCommands:
+                    player.movePlayer('south', map)
+                elif parseCommand[1] in westCommands:
+                    player.movePlayer('west', map)
+            else:
+                print(
+                    parseCommand[0], 'must be paired with a direction. Try entering a direction.')
+        elif parseCommand[0] in helpCommands:
             self.displayHelp()
-        elif command in mapCommands:
+        elif parseCommand[0] in mapCommands:
             if 'map' in player.inventory:
                 map.displayMap()
             else:
                 print('You cannot look at a map you do not have!')
-        elif command in scoreCommands:
+        elif parseCommand[0] in scoreCommands:
             player.displayScore()
-        elif command in quitCommands:
+        elif parseCommand[0] in quitCommands:
             self.endGame(4)
-        elif command in lookCommands:
+        elif parseCommand[0] in lookCommands:
             player.getLongLocation(map)
             return 'long'
-        elif command in searchCommands:
+        elif parseCommand[0] in searchCommands:
             player.itemSearch(map)
-        elif command in inventoryCommands:
+        elif parseCommand[0] in inventoryCommands:
             player.getInventory()
-        elif command in takeCommands:
-            player.takeItem(map)
-        elif command in specialCommands:
-            game.specialEnding(player, map)
-        elif command == '' or None:
+        elif parseCommand[0] in takeCommands:
+            if len(parseCommand) > 1:
+                player.takeItem(map, parseCommand[1])
+            else:
+                print(
+                    parseCommand[0], 'must be paired with an item. Enter the item you want to grab.')
+        elif parseCommand[0] in dropCommands:
+            if len(parseCommand) > 1:
+                player.dropItem(map, parseCommand[1])
+            else:
+                print(
+                    parseCommand[0], 'must be paired with an item. Enter the item you want to drop.')
+        elif parseCommand[0] in specialCommands:
+            if parseCommand[0] == 'use':
+                if len(parseCommand) > 1 and parseCommand[1] == 'radio':
+                    game.specialEnding(self, player, map)
+                else:
+                    cprint('You need to use something!', 'red')
+            else:
+                game.specialEnding(self, player, map)
+        elif parseCommand[0] == '' or None:
             self.displayError(3, player)
             self.getCommand(player, input('Enter new command: '), map)
         else:
@@ -499,45 +555,83 @@ class game:
     # the same as the checkSpecialLocation method to ensure that they are met and then displays a special message and
     # quits the game
     def specialEnding(self, player, map):
-        if map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' in player.inventory:
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall' and 'rope' in player.inventory:
             cprint('You climb the waterfall and eventually manage to signal a low flying aircraft. You are saved!',
                    'green')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Roaring Waterfall' and 'rope' not in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Roaring Waterfall' and 'rope' not in \
                 player.inventory:
             cprint('You try to climb the falls with no rope, this was an obviously stupid idea. You fall to your death '
                    'from 60 feet in the air.', 'red')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front' and 'armour' in \
                 player.inventory and 'sword' in player.inventory:
             cprint('You enter the cave, alert for danger. You follow it down to discover a hidden cove. A sail boat sits '
                    'idly in the water. You sail it out to sea and eventually come across a larger vessel which rescues '
                    'you. You are saved!', 'green')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Strange Cave Front' and 'armour' not in \
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Strange Cave Front' and 'armour' not in \
                 player.inventory and 'sword' not in player.inventory:
             cprint('You try to enter the cave without the proper equipment, you walk ten feet into the cave and '
                    'succumb to a well hidden trap.', 'red')
             self.endGame(3)
-        elif map.map[player.rowLocation][player.colLocation][1] == 'Fallen Tree':
+        if map.map[player.rowLocation][player.colLocation].shortDescription == 'Abandoned Hut' and 'radio' in player.inventory:
+            cprint('You lock yourself in the hut whilst whatever you heard passes by. You hook up the radio to the electricity and eventually manage to '
+                   'connect with someone who can help you. A couple of days later a boat arrives to take you home.',
+                   'green')
+            self.endGame(3)
+        elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
                    'out alive.', 'red')
             self.endGame(3)
 
-    @staticmethod
-    def endGame(endingNo):
+    def endGame(self, endingNo):
         if endingNo == 1:
             cprint(ending1 + copyrightMessage + ending4, 'blue')
-            quit()
+            dec = input('Would you like to play again? (Y/N): ')
+            if dec.lower() == 'y':
+                self.newGame()
+            else:
+                quit()
         elif endingNo == 2:
             cprint(ending2 + copyrightMessage + ending4, 'blue')
-            quit()
+            dec = input('Would you like to play again? (Y/N): ')
+            if dec.lower() == 'y':                
+                self.newGame()
+            else:
+                quit()
         elif endingNo == 3:
             cprint(ending3 + copyrightMessage + ending4, 'blue')
-            quit()
+            dec = input('Would you like to play again? (Y/N): ')
+            if dec.lower() == 'y':
+                self.newGame()
+            else:
+                quit()
         elif endingNo == 4:
             cprint(ending5 + copyrightMessage, 'blue')
-            quit()
+            dec = input('Would you like to play again? (Y/N): ')
+            if dec.lower() == 'y':
+                self.newGame()
+            else:
+                quit()
+
+    def newGame(self):
+        gameMap = map(5, 4, mapLocations, shortLocations, items)
+        self.startGame(gameMap)
+
+    # starting routine
+    def startGame(self, gameMap):
+        self.displayTitle()
+        var = input(introduction)
+        randomRow, randomColumn = gameMap.randomRowCol()
+        while gameMap.map[randomRow][randomColumn].shortDescription == 'Fallen Tree':
+            randomRow, randomColumn = gameMap.randomRowCol()
+        character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
+                        randomColumn, gameMap)
+        self.setDifficulty(input(
+            'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
+        print('\nEnter the \'help\' command to see what you can do!\n')
+        self.gameLoop(character, gameMap)
 
     # this method is the main game loop which is called at the start of the game and runs until the end of the process
     # it handles getting the command from the user, checking to see if the player has visited all of the locations as
@@ -548,7 +642,7 @@ class game:
         while 1:
             locationFlag = self.getCommand(player, input(
                 '\n' + 'What would you like to do?: '), gameMap)
-            game.checkSpecialLocation(player, gameMap)
+            game.checkSpecialLocation(self, player, gameMap)
             if locationFlag == 'long':
                 pass
             count = gameMap.checkVisited()
@@ -563,32 +657,3 @@ class game:
                     elif decision.lower() in noCommands:
                         self.endGame(1)
             player.checkMoves()
-
-
-# class instantiations, defines the size of the map and the locations to place in it
-game = game()
-gameMap = map(5, 4, mapLocations, shortLocations, items)
-
-
-# title display routine
-def displayTitle():
-    cprint(figlet_format('A Huge Text Adventure!',
-                         font='larry3d'), 'red', attrs=['bold'])
-
-
-# starting routine
-def startGame():
-    displayTitle()
-    var = input(introduction)
-    randomRow, randomColumn = gameMap.randomRowCol()
-    while gameMap.map[randomRow][randomColumn][1] == 'Fallen Tree':
-        randomRow, randomColumn = gameMap.randomRowCol()
-    character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
-                       randomColumn, gameMap)
-    game.setDifficulty(input(
-        'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
-    print('\nEnter the \'help\' command to see what you can do!\n')
-    game.gameLoop(character, gameMap)
-
-
-startGame()
