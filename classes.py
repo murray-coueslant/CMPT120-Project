@@ -109,7 +109,7 @@ class Player:
         self.currentLocale = currentLocale
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = ['map', 'rope']
+        self.inventory = []
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -576,10 +576,17 @@ class game:
                    'succumb to a well hidden trap.', 'red')
             self.endGame(3)
         if map.map[player.rowLocation][player.colLocation].shortDescription == 'Abandoned Hut' and 'radio' in player.inventory:
-            cprint('You lock yourself in the hut whilst whatever you heard passes by. You hook up the radio to the electricity and eventually manage to '
-                   'connect with someone who can help you. A couple of days later a boat arrives to take you home.',
+            cprint('You lock yourself in the hut whilst whatever you heard passes by. You hook up the radio to the electricity.',
                    'green')
-            self.endGame(3)
+            cmd = input('What would you like to do?: ').split(' ')
+            try:
+                if cmd[0].lower() == 'use' and cmd[1].lower() == 'radio':
+                    cprint('Eventually you manage to connect with someone who can help you. A couple of days later a boat arrives to take you home.')
+                    self.endGame(3)
+                else:
+                    return
+            except:
+                return
         elif map.map[player.rowLocation][player.colLocation].shortDescription == 'Fallen Tree':
             cprint('You are set upon by a large beast which appeared from a huge fallen tree trunk. You do not make it '
                    'out alive.', 'red')
@@ -622,7 +629,7 @@ class game:
     # starting routine
     def startGame(self, gameMap):
         self.displayTitle()
-        var = input(introduction)
+        input(introduction)
         randomRow, randomColumn = gameMap.randomRowCol()
         while gameMap.map[randomRow][randomColumn].shortDescription == 'Fallen Tree':
             randomRow, randomColumn = gameMap.randomRowCol()
