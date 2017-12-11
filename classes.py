@@ -220,7 +220,7 @@ class Player:
             cprint('You can\'t drop something you don\'t have', 'red')
 
     # this method checks to see if the player has used up all of their available moves for the current game
-    def checkMoves(self):
+    def checkMoves(self, game):
         if self.moves >= self.maxMoves:
             cprint('You have run out of moves, try again!', 'red')
             game.endGame(2)
@@ -596,28 +596,28 @@ class game:
         if endingNo == 1:
             cprint(ending1 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec.lower() == 'y':
+            if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
         elif endingNo == 2:
             cprint(ending2 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec.lower() == 'y':                
+            if dec.lower() in yesCommands:                
                 self.newGame()
             else:
                 quit()
         elif endingNo == 3:
             cprint(ending3 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec.lower() == 'y':
+            if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
         elif endingNo == 4:
             cprint(ending5 + copyrightMessage, 'blue')
             dec = input('Would you like to play again? (Y/N): ')
-            if dec.lower() == 'y':
+            if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
@@ -663,4 +663,4 @@ class game:
                             'Enter a quit command to leave the game once you are done exploring!')
                     elif decision.lower() in noCommands:
                         self.endGame(1)
-            player.checkMoves()
+            player.checkMoves(self)
