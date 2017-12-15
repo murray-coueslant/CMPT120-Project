@@ -1,6 +1,7 @@
+from random import randint, shuffle
+
 from pyfiglet import figlet_format
 from termcolor import cprint
-from random import shuffle, randint
 
 # location set definition
 mapLocations = [('a sandy beach, the waves lap onto the shore steadily. You look to the horizon and see nothing but '
@@ -55,6 +56,7 @@ items = ['map',
          'sword',
          'radio',
          'pickaxe']
+
 # command set definitions
 movementCommands = ['go', 'move', 'travel']
 northCommands = ['n', 'north']
@@ -98,7 +100,6 @@ helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
 
-
 class Player:
     # initialising the variables which store the essential data for the player object
     def __init__(self, name, rowLocation, colLocation, map, score=0, currentLocale = ''):
@@ -110,7 +111,7 @@ class Player:
         self.moves = 0
         self.maxMoves = 0
         self.mapUses = 0
-        self.inventory = ['map']
+        self.inventory = []
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -613,28 +614,28 @@ class game:
     def endGame(self, endingNo):
         if endingNo == 1:
             cprint(ending1 + copyrightMessage + ending4, 'blue')
-            dec = input('Would you like to play again? (Y/N): ')
+            dec = input('Would you like to play again? (Y or N): ')
             if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
         elif endingNo == 2:
             cprint(ending2 + copyrightMessage + ending4, 'blue')
-            dec = input('Would you like to play again? (Y/N): ')
+            dec = input('Would you like to play again? (Y or N): ')
             if dec.lower() in yesCommands:                
                 self.newGame()
             else:
                 quit()
         elif endingNo == 3:
             cprint(ending3 + copyrightMessage + ending4, 'blue')
-            dec = input('Would you like to play again? (Y/N): ')
+            dec = input('Would you like to play again? (Y or N): ')
             if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
         elif endingNo == 4:
             cprint(ending5 + copyrightMessage, 'blue')
-            dec = input('Would you like to play again? (Y/N): ')
+            dec = input('Would you like to play again? (Y or N): ')
             if dec.lower() in yesCommands:
                 self.newGame()
             else:
