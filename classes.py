@@ -109,7 +109,8 @@ class Player:
         self.currentLocale = currentLocale
         self.moves = 0
         self.maxMoves = 0
-        self.inventory = []
+        self.mapUses = 0
+        self.inventory = ['map']
         self.map = map
     # this method is used to change the location of the player within the world map, it takes a direction in the form
     # of a string and a map object and uses an if elif else statement to decide which direction to move the player in,
@@ -207,6 +208,8 @@ class Player:
                 self.inventory.append(item)
                 items.remove(item)
                 print('You have picked up:', item)
+                if item == 'map':
+                    cprint('The map can only be used 5 times! Use it wisely!', 'red')
             else:
                 print('No', item, 'here!')
 
@@ -227,6 +230,14 @@ class Player:
         else:
             cprint('You have ' + str(self.maxMoves - self.moves) +
                    ' moves remaining, use them wisely!', 'blue')
+    
+    # this method checks the amount of times the player has used the map and returns whether or not they're able to use it
+    def checkMap(self):
+        if self.mapUses <=4:
+            return True
+        else:
+            cprint("You have consumed up all of your map uses. Sorry!", "red")
+            return False
 
     def getXPos(self):
         return self.colLocation
@@ -416,6 +427,10 @@ class map:
 
 
 class game:
+    def __init__(self):
+        self.mapLocations = mapLocations
+        self.shortLocations = shortLocations
+        self.items = items
 
     # title display routine
     @staticmethod
@@ -510,7 +525,10 @@ class game:
             self.displayHelp()
         elif parseCommand[0] in mapCommands:
             if 'map' in player.inventory:
-                map.displayMap()
+                moveCheck = player.checkMap()
+                if moveCheck:
+                    map.displayMap()
+                    player.mapUses += 1
             else:
                 print('You cannot look at a map you do not have!')
         elif parseCommand[0] in scoreCommands:
@@ -623,7 +641,7 @@ class game:
                 quit()
 
     def newGame(self):
-        gameMap = map(5, 4, mapLocations, shortLocations, items)
+        gameMap = map(5, 4, self.mapLocations, self.shortLocations, self.items)
         self.startGame(gameMap)
 
     # starting routine
