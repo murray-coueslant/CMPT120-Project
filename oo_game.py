@@ -8,7 +8,8 @@ from termcolor import cprint
 
 from classes import Locale, Player, game, map
 
-# class instantiations, defines the size of the map and the locations to place in it
+# class instantiation creates a new instance of the game class
 game = game()
 
+# calls the newGame method to begin the process of starting the game
 game.newGame()

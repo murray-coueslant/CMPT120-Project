@@ -100,9 +100,10 @@ helpMessage = ('Help:\nEnter a command below, the possible commands are:\n\tgo, 
 # player class definition, the player class has a set of methods which apply to the character which the user is
 # controlling
 
+
 class Player:
     # initialising the variables which store the essential data for the player object
-    def __init__(self, name, rowLocation, colLocation, map, score=0, currentLocale = ''):
+    def __init__(self, name, rowLocation, colLocation, map, score=0, currentLocale=''):
         self.name = name
         self.score = score
         self.rowLocation = rowLocation
@@ -231,10 +232,10 @@ class Player:
         else:
             cprint('You have ' + str(self.maxMoves - self.moves) +
                    ' moves remaining, use them wisely!', 'blue')
-    
+
     # this method checks the amount of times the player has used the map and returns whether or not they're able to use it
     def checkMap(self):
-        if self.mapUses <=4:
+        if self.mapUses <= 4:
             return True
         else:
             cprint("You have consumed up all of your map uses. Sorry!", "red")
@@ -260,6 +261,8 @@ class Player:
                 str(self.getScore())), 'blue')
 
 # locale class greatly simplifies accessing the different pieces of data required at each location
+
+
 class Locale:
     def __init__(self, longDescription, shortDescription, items=[], visited=False, searched=False):
         self.longDescription = longDescription
@@ -437,9 +440,10 @@ class game:
     @staticmethod
     def displayTitle():
         cprint(figlet_format('A Huge Text Adventure!',
-                            font='larry3d'), 'red', attrs=['bold'])
+                             font='larry3d'), 'red', attrs=['bold'])
     # a versatile error display function which can be expanded with many possible errors using error codes, prints
     # predefined error messages
+
     @staticmethod
     def displayError(messageNo, player):
         if messageNo == 1:
@@ -600,7 +604,8 @@ class game:
             cmd = input('What would you like to do?: ').split(' ')
             try:
                 if cmd[0].lower() == 'use' and cmd[1].lower() == 'radio':
-                    cprint('Eventually you manage to connect with someone who can help you. A couple of days later a boat arrives to take you home.')
+                    cprint(
+                        'Eventually you manage to connect with someone who can help you. A couple of days later a boat arrives to take you home.')
                     self.endGame(3)
                 else:
                     return
@@ -611,6 +616,8 @@ class game:
                    'out alive.', 'red')
             self.endGame(3)
 
+    # endGame is passed a number which corresponds to a certain ending in the game, it then creates the correct ending
+    # message for that ending and displays it
     def endGame(self, endingNo):
         if endingNo == 1:
             cprint(ending1 + copyrightMessage + ending4, 'blue')
@@ -622,7 +629,7 @@ class game:
         elif endingNo == 2:
             cprint(ending2 + copyrightMessage + ending4, 'blue')
             dec = input('Would you like to play again? (Y or N): ')
-            if dec.lower() in yesCommands:                
+            if dec.lower() in yesCommands:
                 self.newGame()
             else:
                 quit()
@@ -641,6 +648,8 @@ class game:
             else:
                 quit()
 
+    # the newGame method is used to initialise a map from scratch which is useful for beginning a game and resetting
+    # the game after the user asks to play again
     def newGame(self):
         gameMap = map(5, 4, self.mapLocations, self.shortLocations, self.items)
         self.startGame(gameMap)
@@ -653,7 +662,7 @@ class game:
         while gameMap.map[randomRow][randomColumn].shortDescription == 'Fallen Tree':
             randomRow, randomColumn = gameMap.randomRowCol()
         character = Player(str(input('Enter the name of your character: ')).strip(), randomRow,
-                        randomColumn, gameMap)
+                           randomColumn, gameMap)
         self.setDifficulty(input(
             'What difficulty would you like to play on? (Easy, Medium, Hard): '), character, gameMap)
         print('\nEnter the \'help\' command to see what you can do!\n')
